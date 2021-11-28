@@ -1,0 +1,94 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  background-color: grey;
+  color: #fff;
+  font-family: "Poppins", sans-serif;
+}
+
+.bgt80 {
+  background: rgba(255, 255, 255, 1);
+}
+
+.navbar {
+  font-family: "Poppins", sans-serif;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.navbar-dark .navbar-toggler {
+  color: rgba(179, 32, 37, 1);
+  border-color: rgba(179, 32, 37, 1);
+}
+
+.container-fluid {
+  padding: 0;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+section[id]:before {
+  display: block;
+  height: 56px; /* equal to the header height */
+  margin-top: -56px; /* negative margin equal to the header height */
+  visibility: hidden;
+  content: "";
+}
+
+.headerfw {
+  width: 100%;
+  background-image: url(../img/DSC07882.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.vcenter {
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+.mainlogo {
+  background-image: url(../img/logo\ with\ shadow.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 250px;
+}
+
+.box1 {
+  height: 800px;
+  background-image: url(../img/rick.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.box2 {
+  height: 800px;
+  background-image: url(../img/roll.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.textcenter {
+  text-align: center;
+}
+
+.darkbg {
+  background-color: #2b2b2b;
+}
+
+.lightbg {
+  background-color: #d8d8d8;
+}
