@@ -1,4 +1,8 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap");
+
+*{
+  box-sizing:border-box;
+}
 
 html,
 body {
@@ -12,19 +16,104 @@ body {
   font-family: "Poppins", sans-serif;
 }
 
-.btndba {
-  -webkit-border-radius: 28;
-  -moz-border-radius: 28;
-  border-radius: 28px;
-  font-family: Arial;
-  color: #ffffff;
-  font-size: 20px;
-  background: #2b2b2b;
-  padding: 10px 20px 10px 20px;
-  text-decoration: none;
+.nopad {
+  padding: 0;
 }
 
-.btndba:hover {
-  background: #5b5b5b;
-  text-decoration: none;
+.logos {
+  height: 50px;
+  padding-right: 15px;
 }
+
+.logorow {
+  height: 100%;
+  background-image: url(/img/mylogo.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.logomargins {
+  height: 20vh;
+  padding: 25px;
+  background-color: #2b2b2b;
+}
+
+.dbabtn {
+  background-color: #e93558;
+  border: none;
+  color: #2b2b2b;
+  height: 20vh;
+  padding: 16px 32px;
+  text-align: center;
+  font-size: 30px;
+  transition: 0.3s;
+}
+
+.dbabtn:hover {
+  background-color: #c52d4b;
+}
+
+.spobtn {
+  background-color: #14cc60;
+  border: none;
+  color: #2b2b2b;
+  height: 20vh;
+  padding: 16px 32px;
+  text-align: center;
+  font-size: 30px;
+  transition: 0.3s;
+}
+
+.spobtn:hover {
+  background-color: #19a553;
+}
+
+.fbbtn {
+  background-color: #4064AC;
+  border: none;
+  color: #fff;
+  height: 20vh;
+  width: 100%;
+  padding: 16px 32px;
+  text-align: center;
+  font-size: 30px;
+  transition: 0.3s;
+}
+
+.fbbtn:hover {
+  background-color: #35528d;
+}
+
+.igbtn {
+  background-color: #E2306C;
+  border: none;
+  color: #fff;
+  height: 20vh;
+  width: 100%;
+  padding: 16px 32px;
+  text-align: center;
+  font-size: 30px;
+  transition: 0.3s;
+}
+
+.igbtn:hover {
+  background-color: #be2a5b;
+}
+
+.extrabtn {
+  background-color: #2b2b2b;
+  border: none;
+  color: #fff;
+  height: 20vh;
+  width: 100%;
+  padding: 16px 32px;
+  text-align: center;
+  font-size: 30px;
+  transition: 0.3s;
+}
+
+.extrabtn:hover {
+  background-color: #000000;
+}
+
