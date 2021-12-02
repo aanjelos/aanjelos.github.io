@@ -1,0 +1,153 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&display=swap");
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  background-color: grey;
+  color: #b32025;
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 400;
+}
+
+.vcenter {
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+.nopad {
+  padding: 0;
+  border: 0;
+}
+
+.textcenter {
+  text-align: center;
+}
+
+.darkbg {
+  background-color: #2b2b2b;
+}
+
+.lightbg {
+  background-color: #d8d8d8;
+}
+
+.bgt80 {
+  background: rgba(255, 255, 255, 1);
+}
+
+.navbar {
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 500;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.navbar-dark .navbar-toggler {
+  color: rgba(179, 32, 37, 1);
+  border-color: rgba(179, 32, 37, 1);
+}
+
+.smico {
+  height: 1rem;
+  margin: 0.3rem;
+}
+
+.container-fluid {
+  padding: 0;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+section[id]:before {
+  display: block;
+  height: 56px; /* equal to the header height */
+  margin-top: -56px; /* negative margin equal to the header height */
+  visibility: hidden;
+  content: "";
+}
+
+.headerfw {
+  width: 100%;
+  background-image: url(../img/hero.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.mainlogo {
+  background-image: url(../img/logo\ with\ shadow.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 250px;
+}
+
+.scrollico {
+  background-image: url(/img/scrolldown.svg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 40px;
+  width: 40px;
+  position: absolute;
+  bottom: 2%;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+  -ms-transform: translateX(-50%);
+  transform: translateX(-50%);
+}
+
+.random {
+  background-color: #2b2b2b;
+  height: 5000px;
+  width: 100%;
+}
+
+.infosection {
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+  background-color: #ecf0f1;
+}
+
+.IntroLeft {
+  background-image: url(/img/IntroLeft.png);
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.IntroRight {
+  background-image: url(/img/IntroRight.png);
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.bio {
+  padding: 2rem;
+  padding-bottom: 0rem;
+}
+
+.parallax {
+  background: transparent;
+}
+
+.redoverlay {
+  background-color: rgba(179, 32, 37, 0.75);
+}
+
+.chinfo {
+  padding: 2rem;
+  padding-bottom: 0rem;
+  color: #fff;
+}
+
