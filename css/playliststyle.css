@@ -1,5 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+
+html, body {
+  width: 100%;
+  height:100%;
+}
+
 body {
-  background-color: #2b2b2b;
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 .cards-list {
@@ -14,7 +35,7 @@ body {
   margin: 30px auto;
   width: 300px;
   height: 300px;
-  border-radius: 40px;
+  border-radius: px;
   box-shadow: 5px 5px 30px 7px rgba(0, 0, 0, 0.25),
     -5px -5px 30px 7px rgba(0, 0, 0, 0.22);
   cursor: pointer;
@@ -24,22 +45,21 @@ body {
 .card .card_image {
   width: inherit;
   height: inherit;
-  border-radius: 40px;
+  border-radius: 5px;
 }
 
 .card .card_image img {
   width: inherit;
   height: inherit;
-  border-radius: 40px;
+  border-radius: 5px;
   object-fit: cover;
 }
 
 .card .card_title {
   color: #fff;
   text-align: center;
-  border-radius: 0px 0px 40px 40px;
-  font-family: sans-serif;
-  font-weight: bold;
+  border-radius: 0px 0px 5px 40px;
+  font-family: 'Poppins', sans-serif;
   font-size: 30px;
   margin-top: -80px;
   height: 40px;
