@@ -176,14 +176,17 @@ p {
   font-weight: 500;
 }
 
+
 .hero-content .list-social li {
   float: left;
   margin-right: 20px;
+  margin-bottom: 20px;
 }
 
 .hero-content .list-social li i {
   color: #fff;
   font-size: 15px;
+  font-style: normal;
 }
 
 /*-----------------------------------------------------------------------------------*/

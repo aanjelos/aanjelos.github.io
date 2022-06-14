@@ -21,9 +21,11 @@
     <link href="Bootstrap/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="Bootstrap/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
     <link href="Bootstrap/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="Assets/glightbox/css/glightbox.min.css" rel="stylesheet">
 
     <!-- Template Main CSS File -->
     <link href="CSS/style.css" rel="stylesheet">
+
 </head>
 
 <body>
@@ -42,17 +44,41 @@
                 <p>Videographer/Editor, Photographer, Designer & Human.</p>
 
                 <ul class="list-unstyled list-social">
-                    <li><a href="mailto:aanjelo99@gmail.com" target="_blank"><i class="bi bi-envelope-plus"></i></a>
+                    <li><a href="https://www.youtube.com/watch?v=JjLJlz3bB2M" class="glightbox">
+                            <i class="bi bi-film"> Showreel</i>
+                        </a>
+                    </li>
+                    <li><a href="Folio/portfolio.html" class="glightbox" data-glightbox="width: 800; height: 800;">
+                            <i class="bi bi-briefcase"> Portfolio</i>
+                        </a>
+                    </li>
+                    <li><a href="mailto:aanjelo99@gmail.com" target="_blank"><i class="bi bi-envelope-plus">
+                                Email</i></a>
                     </li>
                     <li><a href="https://wa.me/94701062626?text=Hello%20there!" target="_blank"><i
-                                class="bi bi-whatsapp"></i></a></li>
-                    <li><a href="https://instagram.com/aanjelo.s" target="_blank"><i class="bi bi-instagram"></i></a>
+                                class="bi bi-whatsapp"> Whatsapp</i></a></li>
+                    <li><a href="https://instagram.com/aanjelo.s" target="_blank"><i class="bi bi-instagram">
+                                Instagram</i></a>
                     </li>
 
                 </ul>
             </div>
         </div>
     </div><!-- End Hero -->
+
+    </div>
+
+    </div>
+
+
+    <script src="Assets/glightbox/js/glightbox.min.js"></script>
+    <script type="text/javascript">
+        const lightbox = GLightbox({
+            touchNavigation: true,
+            loop: true,
+            autoplayVideos: true
+        });
+    </script>
 </body>
 
 </html>
