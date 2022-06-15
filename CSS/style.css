@@ -230,3 +230,12 @@ body {
 .emoji {
   font-family: "Noto Emoji", sans-serif;
 }
+
+.gnext,
+.gprev {
+  display: none;
+}
+
+.ginner-container {
+  padding: 20px;
+}
