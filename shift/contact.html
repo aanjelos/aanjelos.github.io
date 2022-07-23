@@ -50,6 +50,15 @@
           <li><a href="index.html">Home</a></li>
           <li><a href="about.html">About</a></li>
           <li><a href="portfolio.html">Portfolio</a></li>
+          <li class="dropdown"><a href="#"><span>Services</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
+            <ul>
+              <li><a href="#">Design & Print</a></li>
+              <li><a href="#">Social Media</a></li>
+              <li><a href="#">Photo & Video</a></li>
+              <li><a href="#">Web & Online Stores</a></li>
+              <li><a href="#">Outdoor Ads</a></li>
+              <li><a href="#">Promotions</a></li>
+            </ul>
           <li><a href="team.html">Team</a></li>
           <li><a href="contact.html" class="active">Contact</a></li>
         </ul>
@@ -81,12 +90,13 @@
 
           <div class="col-lg-5" data-aos="fade-up" data-aos-delay="100">
 
+            <a class="savecont" href="assets/contact/vcard.vcf" download>Save Contact</a>
+
             <div class="info-item d-flex">
-              <i class="bi bi-geo-alt flex-shrink-0"></i>
+              <i class="bi bi-phone flex-shrink-0"></i>
               <div>
-                <h4>Location:</h4>
-                <p>287/8, Subasadaka Mawatha, Daluwakotuwa, <br>
-                  Kochchikade, Sri Lanka.</p>
+                <h4>Call:</h4>
+                <p>+94 71 548 3185</p>
               </div>
             </div><!-- End Info Item -->
 
@@ -99,10 +109,11 @@
             </div><!-- End Info Item -->
 
             <div class="info-item d-flex">
-              <i class="bi bi-phone flex-shrink-0"></i>
+              <i class="bi bi-geo-alt flex-shrink-0"></i>
               <div>
-                <h4>Call:</h4>
-                <p>+94 71 548 3185</p>
+                <h4>Location:</h4>
+                <p>287/8, Subasadaka Mawatha, Daluwakotuwa, <br>
+                  Kochchikade, Sri Lanka.</p>
               </div>
             </div><!-- End Info Item -->
 
@@ -114,10 +125,10 @@
               <input type="hidden" name="_cc" value="aanjelo99@gmail.com">
               <input type="hidden" name="_captcha" value="false">
               <div class="row">
-                <div class="col-md-6 form-group">
+                <div class="form-group mt-3">
                   <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
                 </div>
-                <div class="col-md-6 form-group mt-3 mt-md-0">
+                <div class="form-group mt-3">
                   <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" required>
                 </div>
               </div>
@@ -125,11 +136,11 @@
                 <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject" required>
               </div>
               <div class="form-group mt-3">
-                <textarea class="form-control" name="message" rows="5" placeholder="Message" required></textarea>
+                <textarea class="form-control message" name="message" rows="5" placeholder="Message" required></textarea>
               </div>
               <input type="hidden" name="_template" value="table">
               <input type="hidden" name="_next" value="https://aanjelos.github.io/shift/formsubmit.html">
-              <div class="text-center"><button type="submit">Send Message</button></div>
+              <div class="text-center"><button type="submit" class="cta-btn">Send Message</button></div>
             </form>
 
           </div><!-- End Contact Form -->
