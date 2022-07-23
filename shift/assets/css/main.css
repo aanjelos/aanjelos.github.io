@@ -1,15 +1,3 @@
-/**
-* Template Name: Nova - v1.1.0
-* Template URL: https://bootstrapmade.com/nova-bootstrap-business-template/
-* Author: BootstrapMade.com
-* License: https://bootstrapmade.com/license/
-*/
-
-/*--------------------------------------------------------------
-# Set main reusable colors and fonts using CSS variables
-# Learn more about CSS variables at https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties
---------------------------------------------------------------*/
-/* Fonts */
 :root {
   --font-default: "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif,
@@ -2229,8 +2217,8 @@ section {
 # Custom
 --------------------------------------------------------------*/
 
-.formsubmit-page {
-  background: linear-gradient(-45deg, #00c4b5, #00b8a8, #142142, #22376d);
+.formsubmit-page, .designprinthero {
+  background: linear-gradient(-45deg, #0E182F, #22376D, #142142, #2C478C);
   background-size: 400% 400%;
   animation: gradient 15s ease infinite;
   height: 100vh;
@@ -2255,4 +2243,176 @@ section {
   line-height: 1.2;
   color: #fff;
   font-family: var(--font-secondary);
+}
+
+/*--------------------------------------------------------------
+# Services Hero Section
+--------------------------------------------------------------*/
+
+.designprinthero h1 {
+  margin: 0;
+  font-size: 48px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.designprinthero h2 {
+  color: #fff;
+  margin: 15px 0 0 0;
+  font-size: 24px;
+}
+
+.designprinthero .btn-get-started {
+  margin-top: 30px;
+  line-height: 0;
+  padding: 15px 40px;
+  border-radius: 4px;
+  transition: 0.5s;
+  color: #142142;
+  background: var(--color-primary);
+}
+
+.designprinthero .btn-get-started span {
+  font-family: var(--font-primary);
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 1px;
+}
+
+.designprinthero .btn-get-started i {
+  margin-left: 5px;
+  font-size: 18px;
+  transition: 0.3s;
+}
+
+.designprinthero .btn-get-started:hover i {
+  transform: translateX(5px);
+}
+
+.designprinthero .hero-img {
+  text-align: right;
+}
+
+@media (min-width: 1024px) {
+  .designprinthero {
+    background-attachment: fixed;
+  }
+}
+
+@media (max-width: 991px) {
+  .designprinthero {
+    height: auto;
+    padding: 120px 0 60px 0;
+  }
+
+  .designprinthero .hero-img {
+    text-align: center;
+    margin-top: 80px;
+  }
+
+  .designprinthero .hero-img img {
+    width: 80%;
+  }
+}
+
+@media (max-width: 768px) {
+  .designprinthero {
+    text-align: center;
+  }
+
+  .designprinthero h1 {
+    font-size: 32px;
+  }
+
+  .designprinthero h2 {
+    font-size: 24px;
+  }
+
+  .designprinthero .hero-img img {
+    width: 100%;
+  }
+}
+
+/*--------------------------------------------------------------
+# Services Pricing
+--------------------------------------------------------------*/
+.pricing .box {
+  padding: 40px 20px;
+  background: #fff;
+  text-align: center;
+  box-shadow: 0px 0 30px rgba(1, 41, 112, 0.08);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+  transition: 0.3s;
+}
+
+.pricing .box:hover {
+  transform: scale(1.1);
+  box-shadow: 0px 0 30px rgba(1, 41, 112, 0.1);
+}
+
+.pricing h3 {
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.pricing .price {
+  font-size: 36px;
+  color: #444444;
+  font-weight: 600;
+  font-family: var(--font-primary);
+}
+
+.pricing .price sup {
+  font-size: 20px;
+  top: -15px;
+  left: -3px;
+}
+
+.pricing .price span {
+  color: #bababa;
+  font-size: 16px;
+  font-weight: 300;
+}
+
+.pricing img {
+  padding: 30px 40px;
+}
+
+.pricing ul {
+  padding: 0;
+  list-style: none;
+  color: #444444;
+  text-align: center;
+  line-height: 26px;
+  font-size: 16px;
+  margin-bottom: 25px;
+}
+
+.pricing ul li {
+  padding-bottom: 10px;
+}
+
+.pricing ul .na {
+  color: #ccc;
+  text-decoration: line-through;
+}
+
+.pricing .featured {
+  width: 200px;
+  position: absolute;
+  top: 18px;
+  right: -68px;
+  transform: rotate(45deg);
+  z-index: 1;
+  font-size: 14px;
+  padding: 1px 0 3px 0;
+  background: #00c4b5;
+  color: #fff;
+}
+
+.owl-carousel{
+  padding: 0;
 }
