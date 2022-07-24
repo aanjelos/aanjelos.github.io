@@ -754,6 +754,8 @@ section {
 .services-list .service-item .description {
   line-height: 24px;
   font-size: 14px;
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 /*--------------------------------------------------------------
@@ -802,7 +804,7 @@ section {
   color: #00c4b5;
 }
 
-.savecont{
+.savecont {
   font-family: var(--font-default);
   font-weight: 500;
   font-size: 16px;
@@ -822,8 +824,7 @@ section {
   color: #00c4b5;
 }
 
-
-.message{
+.message {
   margin-bottom: 12px;
 }
 
@@ -1407,7 +1408,7 @@ section {
 .contact .info-item h4 {
   padding: 0;
   font-size: 20px;
-  font-weight: 700; 
+  font-weight: 700;
   margin-bottom: 5px;
   color: var(--color-secondary);
 }
@@ -1490,7 +1491,6 @@ section {
   padding: 12px 40px;
   transition: 0.4s;
 }
-
 
 @-webkit-keyframes animate-loading {
   0% {
@@ -2217,8 +2217,9 @@ section {
 # Custom
 --------------------------------------------------------------*/
 
-.formsubmit-page, .designprinthero {
-  background: linear-gradient(-45deg, #0E182F, #22376D, #142142, #2C478C);
+.formsubmit-page,
+.designprinthero {
+  background: linear-gradient(-45deg, #0e182f, #22376d, #142142, #2c478c);
   background-size: 400% 400%;
   animation: gradient 15s ease infinite;
   height: 100vh;
@@ -2413,6 +2414,6 @@ section {
   color: #fff;
 }
 
-.owl-carousel{
+.owl-carousel {
   padding: 0;
 }
