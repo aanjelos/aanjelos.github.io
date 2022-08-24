@@ -1,0 +1,337 @@
+/* =====
+Fonts
+===== */
+
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&display=swap");
+@font-face {
+  font-family: "SinhalaFont";
+  src: url("../fonts/Sinhala.TTF");
+}
+
+/* =====
+General Settings
+===== */
+
+.mobileoverflowfix {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  background-color: #fff;
+  color: #b32025;
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 400;
+}
+
+p {
+  margin-bottom: 0;
+}
+
+.nopad {
+  padding: 0;
+}
+
+.vcenter {
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+.textcenter {
+  text-align: center;
+}
+
+.container-fluid {
+  padding: 0;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* =====
+Common Properties
+===== */
+#status,
+.headerfw,
+.mainlogo,
+.scrollico,
+.IntroLeft,
+.IntroRight,
+.parallax,
+.chproduct,
+.otherleft,
+.otherright {
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* =====
+Preloader
+===== */
+
+#preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #fff;
+  z-index: 9999;
+}
+
+#status {
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  background-image: url(../img/prel.gif);
+  margin: -100px 0 0 -100px;
+}
+
+/* =====
+Navbar
+===== */
+
+.bgt95 {
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.navbar {
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 500;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.navbar-dark .navbar-toggler {
+  color: rgba(179, 32, 37, 1);
+  border-color: rgba(179, 32, 37, 1);
+}
+
+/* =====
+Hero Image Section
+===== */
+
+.smico {
+  height: 1rem;
+  margin: 0.3rem;
+}
+
+.headerfw {
+  width: 100%;
+  background-image: url(../img/hero.jpg);
+  background-size: cover;
+}
+
+.mainlogo {
+  background-image: url(../img/logo-shadow.png);
+  background-size: contain;
+  height: 250px;
+}
+
+.scrollico {
+  background-image: url(../img/scrolldown.png);
+  background-size: contain;
+  height: 40px;
+  width: 40px;
+  position: absolute;
+  bottom: 2%;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+  -ms-transform: translateX(-50%);
+  transform: translateX(-50%);
+}
+
+/* =====
+About Section
+===== */
+
+.infosection {
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+  background-color: #ecf0f1;
+}
+
+.IntroLeft {
+  background-image: url(../img/IntroLeft.png);
+  height: 100%;
+  background-size: contain;
+}
+
+.IntroRight {
+  background-image: url(../img/IntroRight.png);
+  height: 100%;
+  background-size: contain;
+}
+
+.bio {
+  padding: 2rem;
+}
+
+@media (max-width: 768px) {
+  .bio {
+    padding: 2rem;
+    padding-bottom: 0;
+  }
+}
+
+.redoverlay {
+  background-color: rgba(179, 32, 37, 0.75);
+}
+
+.parallax {
+  background-image: url(../img/chilliBG.jpg);
+  background-attachment: scroll;
+  background-size: cover;
+}
+
+@media (min-width: 768px) {
+  .parallax {
+    background-attachment: fixed;
+  }
+}
+
+.chinfo {
+  padding: 2rem;
+  padding-bottom: 0rem;
+  color: #fff;
+}
+
+/* =====
+Products Section
+===== */
+
+.chpro {
+  background-color: #eeefea;
+}
+
+.chproduct {
+  background-size: cover;
+}
+
+.infotitle {
+  font-size: 2.5rem;
+  font-weight: 400;
+}
+
+.infopad {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.infopadhalf {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.extrapad {
+  padding-bottom: 2rem;
+}
+
+.ordernow {
+  background-color: #b32025;
+  border: none;
+  color: #fff;
+  padding: 1rem 2rem;
+  text-align: center;
+  font-size: 1.5rem;
+  display: inline-block;
+  border-radius: 8px;
+  transition-duration: 0.2s;
+}
+
+.ordernow:hover {
+  background-color: #921e22;
+}
+
+.mfpro {
+  background-color: #dfe1de;
+}
+
+.sinhala {
+  font-family: "SinhalaFont";
+}
+
+.otherpro {
+  background-color: #fff;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.othertitlepad {
+  padding-top: 2.5rem;
+  padding-bottom: 1rem;
+}
+
+.otherleft {
+  background-image: url(../img/OtherLeft.png);
+  height: 100%;
+  background-size: contain;
+}
+
+.otherright {
+  background-image: url(../img/OtherRight.png);
+  height: 100%;
+  background-size: contain;
+}
+
+.otherlist {
+  font-weight: 400;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.otherbotpad {
+  padding-bottom: 1.5rem;
+}
+
+/* =====
+Contact Section
+===== */
+
+.contactsection {
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+  background-color: #b32025;
+  text-align: center;
+  color: #fff;
+  font-size: 1.25rem;
+  line-height: normal;
+}
+
+.contactbtn {
+  background-color: #fff;
+  border: none;
+  color: #b32025;
+  padding: 0.5rem 4rem;
+  text-align: center;
+  font-size: 1.25rem;
+  display: inline-block;
+  border-radius: 8px;
+  transition-duration: 0.2s;
+  margin-top: 1rem;
+}
+
+.contactbtn:hover {
+  background-color: #ececec;
+}
+
+/* =====
+Footer
+===== */
+
+.footer {
+  background-color: #2b2b2b;
+  text-align: center;
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 1rem;
+}
