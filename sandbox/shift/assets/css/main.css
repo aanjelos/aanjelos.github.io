@@ -2457,6 +2457,10 @@ section {
   color: #bababa;
 }
 
+.pricing .nomar{
+  margin-bottom: 0;
+}
+
 .feathighlight {
   color: var(--color-primary);
 }
