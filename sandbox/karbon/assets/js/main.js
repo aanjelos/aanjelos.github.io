@@ -238,7 +238,7 @@
    */
   new PureCounter();
 
-
-  AOS.init();
-
+  AOS.init({
+    once: true,
+  });
 })();

@@ -27,11 +27,14 @@ h6 {
 
 /* Colors */
 :root {
-  --karbon-dorange: #f27f34ff;
-  --karbon-lorange: #f9a03fff;
-  --karbon-black: #191919ff;
-  --karbon-lgreen: #a1c349ff;
-  --karbon-dgreen: #94b33dff;
+  --karbon-black: #191919;
+  --karbon-orange: #db4200;
+  --karbon-orangedark: #ba2000;
+  --karbon-green: #024f54;
+  --karbon-greendark: #02383c;
+  --karbon-teal: #66ffcc;
+  --karbon-blue: #aed0dd;
+  --karbon-light: #dedebf;
 }
 
 /*--------------------------------------------------------------
@@ -45,7 +48,7 @@ h6 {
   bottom: 0;
   z-index: 9999;
   overflow: hidden;
-  background: var(--karbon-dorange);
+  background: var(--karbon-light);
 }
 
 #preloader:before {
@@ -53,9 +56,9 @@ h6 {
   position: fixed;
   top: calc(50% - 30px);
   left: calc(50% - 30px);
-  border: 6px solid var(--karbon-lorange);
-  border-top-color: var(--karbon-dorange);
-  border-bottom-color: var(--karbon-dorange);
+  border: 6px solid var(--karbon-orange);
+  border-top-color: var(--karbon-light);
+  border-bottom-color: var(--karbon-light);
   border-radius: 50%;
   width: 60px;
   height: 60px;
@@ -93,7 +96,7 @@ h6 {
   right: 15px;
   bottom: 15px;
   z-index: 996;
-  background: var(--karbon-dorange);
+  background: var(--karbon-orange);
   width: 40px;
   height: 40px;
   border-radius: 50px;
@@ -102,13 +105,13 @@ h6 {
 
 .back-to-top i {
   font-size: 28px;
-  color: #fff;
+  color: var(--karbon-light);
   line-height: 0;
 }
 
 .back-to-top:hover {
-  background: var(--karbon-lorange);
-  color: #fff;
+  background: var(--karbon-orangedark);
+  color: var(--karbon-light);
 }
 
 .back-to-top.active {
@@ -130,12 +133,12 @@ h6 {
 }
 
 .lang a:hover {
-  color: var(--karbon-lorange);
+  color: var(--karbon-light);
   transition: all 0.3s ease-in-out 0s;
 }
 
 .lang .active {
-  color: var(--karbon-dorange);
+  color: var(--karbon-light);
   pointer-events: none;
   cursor: default;
 }
@@ -151,7 +154,7 @@ h6 {
 
 #header.header-scrolled,
 #header.header-inner-pages {
-  background: rgba(25, 25, 25, 0.9);
+  background: rgba(2, 79, 84, 0.9);
 }
 
 #header .logo {
@@ -181,7 +184,7 @@ h6 {
 /* Get Startet Button */
 .get-started-btn {
   margin-left: 25px;
-  background: var(--karbon-dgreen);
+  background: var(--karbon-green);
   color: #fff;
   border-radius: 50px;
   padding: 8px 25px 9px 25px;
@@ -192,7 +195,7 @@ h6 {
 }
 
 .get-started-btn:hover {
-  background: var(--karbon-lgreen);
+  background: var(--karbon-greendark);
   color: #fff;
 }
 
@@ -256,10 +259,10 @@ h6 {
   content: "";
   position: absolute;
   width: 100%;
-  height: 2px;
+  height: 3px;
   bottom: -2px;
   left: 0;
-  background-color: var(--karbon-dorange);
+  background-color: var(--karbon-light);
   visibility: hidden;
   width: 0px;
   transition: all 0.3s ease-in-out 0s;
@@ -277,73 +280,6 @@ h6 {
 .navbar .active:focus,
 .navbar li:hover > a {
   color: #fff;
-}
-
-.navbar .dropdown ul {
-  display: block;
-  position: absolute;
-  left: 0;
-  top: calc(100% + 30px);
-  margin: 0;
-  padding: 10px 0;
-  z-index: 99;
-  opacity: 0;
-  visibility: hidden;
-  background: #fff;
-  box-shadow: 0px 0px 30px rgba(127, 137, 161, 0.25);
-  transition: 0.3s;
-  border-top: 2px solid var(--karbon-dorange);
-}
-
-.navbar .dropdown ul li {
-  min-width: 200px;
-}
-
-.navbar .dropdown ul a {
-  padding: 10px 20px;
-  font-size: 14px;
-  text-transform: none;
-  font-weight: 500;
-  color: var(--karbon-black);
-}
-
-.navbar .dropdown ul a i {
-  font-size: 12px;
-}
-
-.navbar .dropdown ul a:hover,
-.navbar .dropdown ul .active:hover,
-.navbar .dropdown ul li:hover > a {
-  color: var(--karbon-dorange);
-}
-
-.navbar .dropdown:hover > ul {
-  opacity: 1;
-  top: 100%;
-  visibility: visible;
-}
-
-.navbar .dropdown .dropdown ul {
-  top: 0;
-  left: calc(100% - 30px);
-  visibility: hidden;
-}
-
-.navbar .dropdown .dropdown:hover > ul {
-  opacity: 1;
-  top: 0;
-  left: 100%;
-  visibility: visible;
-}
-
-@media (max-width: 1366px) {
-  .navbar .dropdown .dropdown ul {
-    left: -90%;
-  }
-
-  .navbar .dropdown .dropdown:hover > ul {
-    left: -100%;
-  }
 }
 
 /**
@@ -394,7 +330,7 @@ h6 {
   bottom: 15px;
   left: 15px;
   padding: 10px 0;
-  background-color: #fff;
+  background-color: var(--karbon-light);
   overflow-y: auto;
   transition: 0.3s;
 }
@@ -415,46 +351,12 @@ h6 {
 .navbar-mobile a:hover,
 .navbar-mobile .active,
 .navbar-mobile li:hover > a {
-  color: var(--karbon-dorange);
+  color: var(--karbon-orange);
 }
 
 .navbar-mobile .getstarted,
 .navbar-mobile .getstarted:focus {
   margin: 15px;
-}
-
-.navbar-mobile .dropdown ul {
-  position: static;
-  display: none;
-  margin: 10px 20px;
-  padding: 10px 0;
-  z-index: 99;
-  opacity: 1;
-  visibility: visible;
-  background: #fff;
-  box-shadow: 0px 0px 30px rgba(127, 137, 161, 0.25);
-}
-
-.navbar-mobile .dropdown ul li {
-  min-width: 200px;
-}
-
-.navbar-mobile .dropdown ul a {
-  padding: 10px 20px;
-}
-
-.navbar-mobile .dropdown ul a i {
-  font-size: 12px;
-}
-
-.navbar-mobile .dropdown ul a:hover,
-.navbar-mobile .dropdown ul .active:hover,
-.navbar-mobile .dropdown ul li:hover > a {
-  color: var(--karbon-dgreen);
-}
-
-.navbar-mobile .dropdown > .dropdown-active {
-  display: block;
 }
 
 /*--------------------------------------------------------------
@@ -471,7 +373,7 @@ h6 {
 
 #hero:before {
   content: "";
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.8);
   position: absolute;
   bottom: 0;
   top: 0;
@@ -487,13 +389,13 @@ h6 {
 
 #hero .heroimg {
   margin: 0 0 10px 0;
-  height: 8rem;
+  max-height: 8rem;
 }
 
 #hero h2 {
-  color: #eee;
+  color: var(--karbon-light);
   margin-bottom: 40px;
-  font-size: 24px;
+  font-size: 18px;
 }
 
 #hero .play-btn {
@@ -501,7 +403,7 @@ h6 {
   height: 75px;
   margin: 0 auto;
   background: radial-gradient(
-    var(--karbon-dorange) 50%,
+    var(--karbon-orange) 50%,
     rgba(249, 160, 63, 0.4) 52%
   );
   border-radius: 50%;
@@ -526,7 +428,7 @@ h6 {
 }
 
 #hero .play-btn:hover::after {
-  border-left: 15px solid var(--karbon-dorange);
+  border-left: 15px solid var(--karbon-orange);
   transform: scale(20);
 }
 
@@ -597,6 +499,7 @@ h6 {
 section {
   padding: 80px 0;
   overflow: hidden;
+  background-color: var(--karbon-light);
 }
 
 .section-bg {
@@ -661,6 +564,10 @@ section {
   background-image: url(../img/cinnamon.jpg);
 }
 
+.about .whatweimg {
+  background-image: url(../img/spices.jpg);
+}
+
 @media (max-width: 991.98px) {
   .aboutimg {
     min-height: 300px;
@@ -691,7 +598,7 @@ section {
   left: 0;
   top: 2px;
   font-size: 20px;
-  color: var(--karbon-dgreen);
+  color: var(--karbon-green);
   line-height: 1;
 }
 
@@ -709,15 +616,15 @@ section {
   border-radius: 50px;
   transition: 0.3s;
   line-height: 1;
-  color: var(--karbon-dgreen);
+  color: var(--karbon-green);
   -webkit-animation-delay: 0.8s;
   animation-delay: 0.8s;
   margin-top: 6px;
-  border: 2px solid var(--karbon-dgreen);
+  border: 2px solid var(--karbon-green);
 }
 
 .about .content .btn-learn-more:hover {
-  background: var(--karbon-dgreen);
+  background: var(--karbon-green);
   color: #fff;
   text-decoration: none;
 }
@@ -751,7 +658,7 @@ section {
 .services .icon-box .icon {
   width: 64px;
   height: 64px;
-  background: var(--karbon-dgreen);
+  background: var(--karbon-green);
   border-radius: 50px;
   display: flex;
   align-items: center;
@@ -784,11 +691,11 @@ section {
 
 .services .icon-box:hover {
   transform: translateY(-10px);
-  border-color: var(--karbon-dorange);
+  border-color: var(--karbon-orange);
 }
 
 .services .icon-box:hover h4 a {
-  color: var(--karbon-dgreen);
+  color: var(--karbon-green);
 }
 
 /*--------------------------------------------------------------
@@ -802,13 +709,13 @@ section {
 }
 
 .cta h3 {
-  color: #fff;
+  color: var(--karbon-light);
   font-size: 28px;
   font-weight: 700;
 }
 
 .cta p {
-  color: #fff;
+  color: var(--karbon-light);
 }
 
 .cta-btn {
@@ -821,14 +728,14 @@ section {
   border-radius: 2px;
   transition: 0.5s;
   margin: 10px;
-  background: var(--karbon-dorange);
-  color: #fff;
+  background: var(--karbon-orange);
+  color: var(--karbon-light);
   border-radius: 50px;
 }
 
 .cta-btn:hover {
-  background: var(--karbon-lorange);
-  color: #fff;
+  background: var(--karbon-orangedark);
+  color: var(--karbon-light);
 }
 
 @media (max-width: 1024px) {
@@ -876,71 +783,19 @@ section {
 }
 
 /*--------------------------------------------------------------
-# Counts
---------------------------------------------------------------*/
-.counts {
-  background: url("../img/counts-bg.jpg") center center no-repeat;
-  background-size: cover;
-  padding: 80px 0 60px 0;
-  position: relative;
-}
-
-.counts::before {
-  content: "";
-  position: absolute;
-  background: rgba(17, 17, 17, 0.9);
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-}
-
-.counts .title {
-  position: relative;
-  color: #fff;
-  margin-bottom: 40px;
-}
-
-.counts .title h3 {
-  font-size: 36px;
-  font-weight: 700;
-}
-
-.counts .counters span {
-  font-size: 48px;
-  display: block;
-  font-weight: 700;
-  color: var(--karbon-dgreen);
-}
-
-.counts .counters p {
-  padding: 0;
-  margin: 0 0 20px 0;
-  font-family: "Raleway", sans-serif;
-  font-size: 14px;
-  color: #fff;
-}
-
-@media (min-width: 1200px) {
-  .counts {
-    background-attachment: fixed;
-  }
-}
-
-/*--------------------------------------------------------------
 # Products
 --------------------------------------------------------------*/
 .products {
-  background-color: var(--karbon-lgreen);
+  background-color: var(--karbon-orange);
 }
 
 .products .section-title {
   padding-bottom: 0;
-  color: #fff;
+  color: var(--karbon-light);
 }
 
 .products h2::after {
-  background-color: #fff;
+  background-color: var(--karbon-light);
 }
 
 .products .portfolio-item {
@@ -958,10 +813,17 @@ section {
   transform: scale(1.1);
 }
 
+.products h3 {
+  color: var(--karbon-light);
+  font-size: 16px;
+  font-weight: 400;
+  text-align: center;
+}
+
 /*--------------------------------------------------------------
 # Product Details
 --------------------------------------------------------------*/
-.gslide-inner-content{
+.gslide-inner-content {
   margin: 20px;
 }
 
@@ -984,22 +846,22 @@ section {
   .swiper-pagination-bullet {
   width: 12px;
   height: 12px;
-  background-color: #fff;
+  background-color: var(--karbon-light);
   opacity: 1;
-  border: 1px solid var(--karbon-dgreen);
+  border: 1px solid var(--karbon-orange);
 }
 
 .portfolio-details
   .portfolio-details-slider
   .swiper-pagination
   .swiper-pagination-bullet-active {
-  background-color: var(--karbon-dgreen);
+  background-color: var(--karbon-orange);
 }
 
 .portfolio-details .portfolio-info {
   padding: 30px;
   box-shadow: 0px 0 30px rgba(40, 40, 40, 0.08);
-  background-color: var(--karbon-dorange);
+  background-color: var(--karbon-green);
 }
 
 .portfolio-details .portfolio-info h3 {
@@ -1007,20 +869,22 @@ section {
   font-weight: 700;
   margin-bottom: 20px;
   padding-bottom: 20px;
-  border-bottom: 1px solid var(--karbon-lorange);
+  border-bottom: 1px solid var(--karbon-greendark);
+  color: var(--karbon-light);
 }
 
 .portfolio-details .portfolio-info ul {
   list-style: none;
   padding: 0;
   font-size: 15px;
+  color: var(--karbon-light);
 }
 
 .portfolio-details .portfolio-info ul li + li {
   margin-top: 10px;
 }
 
-.portfolio-details .portfolio-info .subbullet{
+.portfolio-details .portfolio-info .subbullet {
   margin-top: 0;
 }
 
@@ -1048,7 +912,7 @@ section {
 
 .contact .info i {
   font-size: 32px;
-  color: var(--karbon-dgreen);
+  color: var(--karbon-green);
   float: left;
   line-height: 1;
 }
@@ -1098,8 +962,8 @@ section {
 
 .contact .info-item i {
   font-size: 20px;
-  background: var(--karbon-dorange);
-  color: #fff;
+  background: var(--karbon-orange);
+  color: var(--karbon-light);
   width: 44px;
   height: 44px;
   display: flex;
@@ -1111,7 +975,7 @@ section {
 }
 
 .contact .info-item i:hover {
-  background-color: var(--karbon-lorange);
+  background-color: var(--karbon-orangedark);
 }
 
 .contact .info-item h4 {
@@ -1139,13 +1003,13 @@ section {
   transition: 0.5s;
   margin-bottom: 40px;
   margin-top: 1rem;
-  background: var(--karbon-dorange);
+  background: var(--karbon-orange);
   color: #fff;
   border-radius: 50px;
 }
 
 .savecont:hover {
-  background: var(--karbon-lorange);
+  background: var(--karbon-orangedark);
   color: #fff;
 }
 
@@ -1202,14 +1066,18 @@ section {
 .contact .php-email-form input,
 .contact .php-email-form textarea {
   border-radius: 0;
+  outline: 0;
+  border-width: 0 0 2px;
   box-shadow: none;
   font-size: 14px;
   padding: 12px 15px;
+  background-color: var(--karbon-light);
+  border-color: var(--karbon-black);
 }
 
 .contact .php-email-form input:focus,
 .contact .php-email-form textarea:focus {
-  border-color: var(--karbon-dorange);
+  border-color: var(--karbon-orangedark);
 }
 
 .contact .php-email-form textarea {
@@ -1247,7 +1115,7 @@ section {
   padding-bottom: 0;
 }
 
-.contact .contact-btn{
+.contact .contact-btn {
   padding-top: 60px;
 }
 
@@ -1297,18 +1165,15 @@ section {
 --------------------------------------------------------------*/
 #footer {
   background: var(--karbon-black);
-  color: #fff;
+  color: var(--karbon-light);
   font-size: 14px;
   text-align: center;
   padding: 30px 0;
 }
 
-#footer h3 {
-  font-size: 36px;
-  font-weight: 700;
-  color: #fff;
+#footer img {
+  max-height: 100px;
   position: relative;
-  font-family: "Poppins", sans-serif;
   padding: 0;
   margin: 0 0 15px 0;
 }
@@ -1327,8 +1192,8 @@ section {
 #footer .social-links a {
   font-size: 18px;
   display: inline-block;
-  background: var(--karbon-dorange);
-  color: #fff;
+  background: var(--karbon-orange);
+  color: var(--karbon-light);
   line-height: 1;
   padding: 8px 0;
   margin-right: 4px;
@@ -1340,8 +1205,8 @@ section {
 }
 
 #footer .social-links a:hover {
-  background: var(--karbon-lorange);
-  color: #fff;
+  background: var(--karbon-orangedark);
+  color: var(--karbon-light);
   text-decoration: none;
 }
 
@@ -1355,15 +1220,15 @@ section {
 
 #footer .shift a {
   transition: 0.3s;
-  color: #fff;
+  color: var(--karbon-light);
 }
 
 #footer .shift a:hover {
-  color: var(--karbon-dgreen);
+  color: #fff;
 }
 
 .formsubmit-page {
-  background: var(--karbon-black);
+  background: var(--karbon-light);
   height: 100vh;
 }
 
@@ -1372,13 +1237,13 @@ section {
   font-size: 32px;
   font-weight: 700;
   line-height: 1.2;
-  color: #fff;
+  color: var(--karbon-black);
 }
 
-.formsubmit-page .cta-btn{
-  background-color: var(--karbon-dorange);
+.formsubmit-page .cta-btn {
+  background-color: var(--karbon-orange);
 }
 
-.formsubmit-page .cta-btn:hover{
-  background-color: var(--karbon-lorange);
+.formsubmit-page .cta-btn:hover {
+  background-color: var(--karbon-orangedark);
 }
