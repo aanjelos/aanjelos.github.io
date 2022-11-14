@@ -1238,6 +1238,7 @@ section {
   font-weight: 700;
   line-height: 1.2;
   color: var(--karbon-black);
+  padding-bottom: 1rem;
 }
 
 .formsubmit-page .cta-btn {
