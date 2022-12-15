@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!DOCTYPE html>
+
+    <style>
+      /* Add some styling for the form */
+      form {
+        padding: 10px;
+        margin: 10px auto;
+        width: 300px;
+        background-color: #eee;
+        border-radius: 5px;
+      }
+      /* Style the form elements */
+      input,
+      textarea {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+      input[type="submit"] {
+        background-color: #4caf50;
+        color: white;
+        font-weight: bold;
+        border: none;
+      }
+      input[type="submit"]:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Contact Form</h1>
+    <!-- Create the form -->
+    <form action="send_email.php" method="post">
+      <label for="name">Name:</label><br />
+      <input type="text" id="name" name="name" /><br />
+      <label for="email">Email:</label><br />
+      <input type="text" id="email" name="email" /><br />
+      <label for="message">Message:</label><br />
+      <textarea id="message" name="message"></textarea><br />
+      <input type="submit" value="Send" />
+    </form>
+  </body>
+</html>
