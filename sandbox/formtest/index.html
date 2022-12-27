@@ -8,30 +8,38 @@
     <!DOCTYPE html>
 
     <style>
-      /* Add some styling for the form */
       form {
-        padding: 10px;
-        margin: 10px auto;
-        width: 300px;
-        background-color: #eee;
-        border-radius: 5px;
+        width: 50%;
+        margin: 0 auto;
+        text-align: center;
       }
-      /* Style the form elements */
-      input,
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      input[type="text"],
       textarea {
         width: 100%;
-        padding: 10px;
-        margin: 5px 0;
+        padding: 12px 20px;
+        margin: 8px 0;
         box-sizing: border-box;
-        border: 1px solid #ccc;
-        border-radius: 3px;
+        border: 2px solid #ccc;
+        border-radius: 4px;
       }
+
       input[type="submit"] {
+        width: 100%;
         background-color: #4caf50;
         color: white;
-        font-weight: bold;
+        padding: 14px 20px;
+        margin: 8px 0;
         border: none;
+        border-radius: 4px;
+        cursor: pointer;
       }
+
       input[type="submit"]:hover {
         background-color: #45a049;
       }
@@ -41,7 +49,11 @@
   <body>
     <h1>Contact Form</h1>
     <!-- Create the form -->
-    <form action="send_email.php" method="post">
+    <form
+      action="mailto:aanjelo99@gmail.com"
+      method="post"
+      enctype="text/plain"
+    >
       <label for="name">Name:</label><br />
       <input type="text" id="name" name="name" /><br />
       <label for="email">Email:</label><br />
