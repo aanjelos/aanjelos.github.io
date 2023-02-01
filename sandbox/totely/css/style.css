@@ -1,0 +1,21 @@
+.container-fluid {
+  padding-right: 0;
+  padding-left: 0;
+}
+
+#owl-demo .item img {
+  display: block;
+  width: 100wv;
+  height: auto;
+}
+
+@media screen and (max-width: 600px) {
+    .owl-dots {
+      visibility: hidden;
+      clear: both;
+      float: left;
+      margin: 10px auto 5px 20px;
+      width: 28%;
+      display: none;
+    }
+  }

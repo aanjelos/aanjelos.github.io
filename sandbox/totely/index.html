@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Totely</title>
+    <link rel="icon" type="image/x-icon" href="images/logobg.png" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/owl.carousel.min.css" rel="stylesheet" />
+    <link href="css/owl.theme.default.min.css" rel="stylesheet" />
+    <link href="css/style.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="container-fluid vw-100" id="top">
+      <div id="owl-demo" class="owl-carousel owl-theme">
+        <div class="item"><img src="images/Hero1.jpg" /></div>
+        <div class="item"><img src="images/Hero2.jpg" /></div>
+        <div class="item"><img src="images/Hero3.jpg" /></div>
+        <div class="item"><img src="images/Hero4.jpg" /></div>
+      </div>
+    </div>
+
+    <script src="jquery/jquery.min.js"></script>
+    <script src="jquery/owl.carousel.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $("#owl-demo").owlCarousel({
+          slideSpeed: 300,
+          paginationSpeed: 400,
+          loop: true,
+          autoplay: 6000,
+          items: 1,
+          
+        });
+      });
+    </script>
+  </body>
+</html>
