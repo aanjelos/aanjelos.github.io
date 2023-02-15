@@ -6,14 +6,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Totely</title>
     <link rel="icon" type="image/x-icon" href="images/logobg.png" />
+
     <link href="css/bootstrap.min.css" rel="stylesheet" />
     <link href="css/owl.carousel.min.css" rel="stylesheet" />
     <link href="css/owl.theme.default.min.css" rel="stylesheet" />
     <link href="css/style.css" rel="stylesheet" />
   </head>
+
   <body>
-    <div class="container-fluid vw-100" id="top">
-      <div id="owl-demo" class="owl-carousel owl-theme">
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark navcolor">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#home">
+          <img class="navlogo" src="images/White.png"
+        /></a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link textcenter h5" href="#about">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link textcenter h5" href="#products">Products</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link textcenter h5" href="#reviews">Reviews</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link textcenter h5" href="#contact">Contact Us</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid vw-100" id="home">
+      <div id="owl-header" class="owl-carousel owl-theme">
         <div class="item"><img src="images/Hero1.jpg" /></div>
         <div class="item"><img src="images/Hero2.jpg" /></div>
         <div class="item"><img src="images/Hero3.jpg" /></div>
@@ -21,17 +58,119 @@
       </div>
     </div>
 
+    <div class="container section about" id="about">
+      <div class="row">
+        <div class="col-lg-4 my-auto">
+          <img class="img-fluid" src="images/about1.jpg" alt="" />
+        </div>
+        <div class="col-lg-4 my-auto">
+          <div class="row"><h1>About Us</h1></div>
+          <div class="row">
+            <p>
+              At Totely, we believe that every tote should be a reflection of
+              its owner. That's why we offer a range of customization options,
+              from blank totes to custom designed totes. Whether you want to
+              make a statement or simply carry your essentials in style, we've
+              got you covered.
+            </p>
+          </div>
+        </div>
+        <div class="col-lg-4 my-auto">
+          <img class="img-fluid" src="images/about2.jpg" alt="" />
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid section products" id="products">
+      <div class="container">
+        <div class="row">
+          <h1>Products</h1>
+        </div>
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="row">
+              <img class="img-fluid" src="images/typo.jpg" />
+            </div>
+            <div class="row">
+              <p>
+                Our typographic totes feature eye-catching text designs, great
+                for gifts or personal use.
+                <br />
+              </p>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="row">
+              <img class="img-fluid" src="images/blank.jpg" />
+            </div>
+            <div class="row">
+              <p>
+                Our blank totes come in a variety of colors and are perfect for
+                DIY projects or as a canvas for your own designs.
+                <br />
+              </p>
+            </div>
+          </div>
+
+          <div class="col-lg-4">
+            <div class="row">
+              <img class="img-fluid" src="images/custom.jpg" />
+            </div>
+            <div class="row">
+              <p>
+                For those looking for a truly one-of-a-kind creation, our custom
+                designed totes allow you to bring your vision to life.
+                <br />
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid vw-100" id="reviews">
+      <div id="owl-reviews" class="owl-carousel">
+        <div class="item"><img src="images/about1.jpg" /></div>
+        <div class="item"><img src="images/about2.jpg" /></div>
+        <div class="item"><img src="images/about1.jpg" /></div>
+        <div class="item"><img src="images/about2.jpg" /></div>
+      </div>
+    </div>
+
+    <div style="height: 1000px; color: beige"></div>
+
     <script src="jquery/jquery.min.js"></script>
     <script src="jquery/owl.carousel.min.js"></script>
+    <script src="jquery/bootstrap.min.js"></script>
     <script>
       $(document).ready(function () {
-        $("#owl-demo").owlCarousel({
+        $("#owl-header").owlCarousel({
           slideSpeed: 300,
           paginationSpeed: 400,
           loop: true,
           autoplay: 6000,
           items: 1,
-          
+          autoplayHoverPause: true,
+        });
+        $("#owl-reviews").owlCarousel({
+          loop: true,
+          autoplay: true,
+          autoplayTimeout: 5000,
+          dots: false,
+          margin: 0,
+          center: true,
+          responsiveClass: true,
+          responsive: {
+            0: {
+              items: 2,
+            },
+            768: {
+              items: 3,
+            },
+            992: {
+              items: 5,
+            },
+          },
         });
       });
     </script>

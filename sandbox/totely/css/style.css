@@ -1,3 +1,32 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+body {
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  color: #262626;
+}
+
+.navcolor {
+  background: rgba(38, 38, 38, 0.9);
+}
+
+.navbar {
+  font-weight: 200;
+  padding-left: 25px;
+  padding-right: 25px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.navbar-dark .navbar-toggler {
+  color: #fff;
+  border-color: #fff;
+}
+
+.navlogo {
+  height: 50px;
+}
+
 .container-fluid {
   padding-right: 0;
   padding-left: 0;
@@ -7,15 +36,43 @@
   display: block;
   width: 100wv;
   height: auto;
+  padding-top: 70px;
+  background-color: #262626;
 }
 
 @media screen and (max-width: 600px) {
-    .owl-dots {
-      visibility: hidden;
-      clear: both;
-      float: left;
-      margin: 10px auto 5px 20px;
-      width: 28%;
-      display: none;
-    }
+  .owl-dots {
+    visibility: hidden;
+    clear: both;
+    float: left;
+    margin: 10px auto 5px 20px;
+    width: 28%;
+    display: none;
   }
+}
+
+.section {
+  padding-top: 50px;
+  padding-bottom: 50px;
+  text-align: justify;
+}
+
+.section h1 {
+  font-weight: 600;
+  text-align: center;
+  text-decoration: underline;
+  padding-bottom: 25px;
+  padding-top: 25px;
+}
+
+.section p {
+  margin-bottom: 25px;
+}
+
+.products {
+  background-color: #fcede3;
+}
+
+.products p {
+  margin-top: 25px;
+}
