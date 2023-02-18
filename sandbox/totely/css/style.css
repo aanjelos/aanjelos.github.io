@@ -4,6 +4,8 @@ body {
   font-family: "Poppins", sans-serif;
   font-size: 16px;
   color: #262626;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .navcolor {
@@ -32,7 +34,7 @@ body {
   padding-left: 0;
 }
 
-#owl-demo .item img {
+#owl-header .item img {
   display: block;
   width: 100wv;
   height: auto;
@@ -52,15 +54,15 @@ body {
 }
 
 .section {
-  padding-top: 50px;
-  padding-bottom: 50px;
+  padding-top: 70px;
+  padding-bottom: 70px;
   text-align: justify;
 }
 
 .section h1 {
   font-weight: 600;
   text-align: center;
-  text-decoration: underline;
+
   padding-bottom: 25px;
   padding-top: 25px;
 }
@@ -75,4 +77,34 @@ body {
 
 .products p {
   margin-top: 25px;
+}
+
+.reviews {
+  background-color: #fcede3;
+  padding-top: 0;
+}
+
+.contact {
+  background-color: #262626;
+  color: #fcede3;
+}
+
+a,
+a:hover,
+a:visited,
+a:active {
+  color: inherit;
+}
+
+.footer {
+  background-color: #c7b6a9;
+  padding: 25px;
+}
+
+.socialico {
+  height: 24px;
+}
+
+.footerlogo {
+  width: 250px;
 }

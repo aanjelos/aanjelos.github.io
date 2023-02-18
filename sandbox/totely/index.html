@@ -67,11 +67,16 @@
           <div class="row"><h1>About Us</h1></div>
           <div class="row">
             <p>
-              At Totely, we believe that every tote should be a reflection of
-              its owner. That's why we offer a range of customization options,
-              from blank totes to custom designed totes. Whether you want to
-              make a statement or simply carry your essentials in style, we've
-              got you covered.
+              <b>
+                When it comes to customized totes, we're Totely the experts!</b
+              >
+              Totely is a Colombo-based business founded in 2019 by Shakira
+              Farook. We offer high-quality, customizable tote bags, perfect for
+              every style and occasion. Our range includes blank totes,
+              typographic totes, and custom-designed totes. At Totely, we're
+              passionate about creating unique, eye-catching designs that
+              reflect our customers' personalities and vision. Join the Totely
+              revolution and elevate your tote game today!
             </p>
           </div>
         </div>
@@ -128,16 +133,86 @@
       </div>
     </div>
 
-    <div class="container-fluid vw-100" id="reviews">
-      <div id="owl-reviews" class="owl-carousel">
-        <div class="item"><img src="images/about1.jpg" /></div>
-        <div class="item"><img src="images/about2.jpg" /></div>
-        <div class="item"><img src="images/about1.jpg" /></div>
-        <div class="item"><img src="images/about2.jpg" /></div>
+    <div class="container-fluid vw-100 section reviews" id="reviews">
+      <div id="owl-reviews" class="owl-carousel owl-theme">
+        <div class="item"><img src="images/reviews/r1.jpg" /></div>
+        <div class="item"><img src="images/reviews/r2.jpg" /></div>
+        <div class="item"><img src="images/reviews/r3.jpg" /></div>
+        <div class="item"><img src="images/reviews/r4.jpg" /></div>
+        <div class="item"><img src="images/reviews/r5.jpg" /></div>
+        <div class="item"><img src="images/reviews/r6.jpg" /></div>
+        <div class="item"><img src="images/reviews/r7.jpg" /></div>
+        <div class="item"><img src="images/reviews/r8.jpg" /></div>
+        <div class="item"><img src="images/reviews/r9.jpg" /></div>
+        <div class="item"><img src="images/reviews/r10.jpg" /></div>
       </div>
     </div>
 
-    <div style="height: 1000px; color: beige"></div>
+    <div class="container-fluid section contact" id="contact">
+      <div class="container">
+        <div class="row">
+          <h1>Contact Us</h1>
+          <div class="col-lg-8 offset-lg-2">
+            <p>
+              Ready to take your tote game to the next level? Have a question
+              about our products or services? We're here to help! Get in touch
+              with us using one of the methods below:
+            </p>
+
+            <ul>
+              <li>
+                Send us a direct message on our
+                <a
+                  href="https://www.instagram.com/totelybagginaway/"
+                  target="_blank"
+                  >Instagram</a
+                >
+                for quick and easy communication.
+              </li>
+
+              <li>
+                Email us at
+                <a href="mailto:fathima1288@amdtians.com"
+                  >fathima1288@amdtians.com</a
+                >
+                for general inquiries or to place an order.
+              </li>
+
+              <li>
+                WhatsApp us on
+                <a href="https://wa.me/94771234567" target="_blank"
+                  >+94 77 123 4567</a
+                >
+              </li>
+            </ul>
+            <p>
+              At Totely, we pride ourselves on providing excellent customer
+              service and are always happy to help in any way we can. Whether
+              you're a returning customer or a first-time shopper, we look
+              forward to hearing from you!
+            </p>
+            <div class="row text-center d-block">
+              <a
+                href="https://www.instagram.com/totelybagginaway/"
+                target="_blank"
+                ><img class="socialico" src="images/instagram.svg"
+              /></a>
+              <a href="https://wa.me/94771234567" target="_blank"
+                ><img class="socialico" src="images/whatsapp.svg"
+              /></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid section footer" id="footer">
+      <div class="container">
+        <div class="row text-center d-block">
+          <img class="footerlogo" src="images/logo.png" />
+        </div>
+      </div>
+    </div>
 
     <script src="jquery/jquery.min.js"></script>
     <script src="jquery/owl.carousel.min.js"></script>
@@ -148,7 +223,8 @@
           slideSpeed: 300,
           paginationSpeed: 400,
           loop: true,
-          autoplay: 6000,
+          autoplay: true,
+          autoplayTimeout: 5000,
           items: 1,
           autoplayHoverPause: true,
         });
@@ -162,7 +238,7 @@
           responsiveClass: true,
           responsive: {
             0: {
-              items: 2,
+              items: 1,
             },
             768: {
               items: 3,
