@@ -1,0 +1,67 @@
+body {
+    margin: 0;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100vh;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .container {
+    display: flex;
+  }
+  
+  .rectangle {
+    height: 300px;
+    margin: 10px;
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    z-index: 1;
+    transition: width 0.3s ease-in-out;
+    background-size: 200% 200%;
+    animation: gradientLoop 5s linear infinite; /* Gradient animation */
+  }
+  
+  .rectangle.blue { background-color: #009CFF; width: 250px; background: linear-gradient(45deg, #0074FF, #00B6FF); }
+  .rectangle.green { background-color: #00E27C; width: 200px; background: linear-gradient(45deg, #00AA5E, #00E27C); }
+  .rectangle.yellow { background-color: #EAA500; width: 50px; background: linear-gradient(45deg, #E88F00, #FFC94E); }
+  .rectangle.red { background-color: #FF5A61; width: 100px; background: linear-gradient(45deg, #FF414E, #FF8C8F); }
+  .rectangle.black { background-color: #10142A; width: 450px; margin-left: 10px; pointer-events: none; margin-right: 0; }
+  
+  .text {
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    text-align: justify;
+    width: calc(100% - 50px);
+    padding: 25px;
+    transition: opacity 0.3s ease-in-out;
+  }
+  
+  .rectangle:hover .text {
+    opacity: 1;
+  }
+  
+  .rectangle:hover {
+    width: 400px;
+    z-index: 2;
+  }
+  
+  @keyframes gradientLoop {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
