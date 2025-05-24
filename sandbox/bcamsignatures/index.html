@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Signature Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
+        }
+        .view {
+            display: none; /* Initially hide all views */
+        }
+        .view.active {
+            display: block; /* Show active view */
+        }
+        /* Custom scrollbar for textarea */
+        textarea::-webkit-scrollbar {
+            width: 8px;
+        }
+        textarea::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        textarea::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        textarea::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        .smooth-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .btn {
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+        .btn-primary {
+            background-color: #2563eb; /* Blue-600 */
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #1d4ed8; /* Blue-700 */
+        }
+        .btn-secondary {
+            background-color: #4b5563; /* Gray-600 */
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #374151; /* Gray-700 */
+        }
+         .btn-outline {
+            background-color: white;
+            color: #1f2937; /* Gray-800 */
+            border: 1px solid #d1d5db; /* Gray-300 */
+        }
+        .btn-outline:hover {
+            background-color: #f9fafb; /* Gray-50 */
+        }
+        .input-field {
+            border-color: #d1d5db; /* Gray-300 */
+        }
+        .input-field:focus {
+            border-color: #2563eb; /* Blue-600 */
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4); /* Blue focus ring */
+        }
+        .brand-button {
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .brand-button:hover, .brand-button.selected {
+            border-color: #2563eb; /* Blue-600 */
+            transform: scale(1.03);
+        }
+        .brand-button img {
+            max-height: 60px;
+            object-fit: contain;
+        }
+        .loader {
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #2563eb;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        #toast-message {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #10b981; /* Green-500 */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        #toast-message.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6">
+
+    <div class="w-full max-w-2xl bg-white rounded-xl smooth-shadow overflow-hidden">
+        <header class="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 text-white text-center">
+            <h1 class="text-2xl sm:text-3xl font-bold">Email Signature Generator</h1>
+        </header>
+
+        <main class="p-6 sm:p-8">
+            <section id="brand-selection-view" class="view active">
+                <h2 class="text-xl sm:text-2xl font-semibold mb-6 text-gray-700 text-center">Step 1: Choose Your Brand</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <button id="select-bcam" class="brand-button bg-gray-50 p-6 rounded-lg flex flex-col items-center justify-center smooth-shadow hover:shadow-lg">
+                        <img src="https://bcamapp.com/assets/images/logos/assets-management-logo.webp" alt="BCAM Logo" class="mb-3 h-12 sm:h-16 object-contain">
+                        <span class="text-lg font-medium text-gray-800">BCAM</span>
+                    </button>
+                    <button id="select-sprintlab" class="brand-button bg-gray-50 p-6 rounded-lg flex flex-col items-center justify-center smooth-shadow hover:shadow-lg">
+                        <img src="https://sprintlabsoftware.com/images/logo.png" alt="SprintLab Logo" class="mb-3 h-12 sm:h-16 object-contain">
+                        <span class="text-lg font-medium text-gray-800">SprintLab</span>
+                    </button>
+                </div>
+            </section>
+
+            <section id="form-view" class="view">
+                <div class="flex items-center mb-6">
+                    <button id="back-to-brand-selection" class="btn btn-outline p-2 rounded-md mr-4" aria-label="Go back to brand selection">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                    <h2 class="text-xl sm:text-2xl font-semibold text-gray-700">Step 2: Enter Your Details for <span id="selected-brand-name" class="text-blue-600"></span></h2>
+                </div>
+                <form id="signature-form" class="space-y-5">
+                    <div>
+                        <label for="fullName" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                        <input type="text" id="fullName" name="fullName" required class="input-field w-full p-3 border rounded-md focus:outline-none" placeholder="e.g., Garry Lewis">
+                    </div>
+                    <div>
+                        <label for="jobPosition" class="block text-sm font-medium text-gray-700 mb-1">Job Position</label>
+                        <input type="text" id="jobPosition" name="jobPosition" required class="input-field w-full p-3 border rounded-md focus:outline-none" placeholder="e.g., Founder/CEO">
+                    </div>
+                    <div>
+                        <label for="phone1" class="block text-sm font-medium text-gray-700 mb-1">Phone Number 1</label>
+                        <input type="tel" id="phone1" name="phone1" class="input-field w-full p-3 border rounded-md focus:outline-none" placeholder="e.g., 1300 302 644">
+                    </div>
+                    <div>
+                        <label for="phone2" class="block text-sm font-medium text-gray-700 mb-1">Phone Number 2 (Optional)</label>
+                        <input type="tel" id="phone2" name="phone2" class="input-field w-full p-3 border rounded-md focus:outline-none" placeholder="e.g., 0400 539 919">
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Your Email Address</label>
+                        <input type="email" id="email" name="email" required class="input-field w-full p-3 border rounded-md focus:outline-none" placeholder="e.g., your.name@company.com">
+                    </div>
+                    
+                    <div class="pt-2">
+                        <p class="text-sm font-medium text-gray-700">Company Website:</p>
+                        <p id="companyWebsite" class="text-gray-600 mt-1 p-3 border border-gray-200 bg-gray-50 rounded-md"></p>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-700">Company Address:</p>
+                        <p id="companyAddress" class="text-gray-600 mt-1 p-3 border border-gray-200 bg-gray-50 rounded-md"></p>
+                    </div>
+
+                    <button type="submit" id="generate-signature" class="btn btn-primary w-full py-3 rounded-md text-lg font-semibold mt-4">Generate Signature</button>
+                </form>
+            </section>
+
+            <section id="output-view" class="view">
+                 <div class="flex items-center mb-6">
+                    <button id="back-to-form" class="btn btn-outline p-2 rounded-md mr-4" aria-label="Go back to form">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                    <h2 class="text-xl sm:text-2xl font-semibold text-gray-700">Step 3: Your Signature is Ready!</h2>
+                </div>
+
+                <div class="mb-8 p-4 border border-gray-200 rounded-lg bg-gray-50">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-3">Signature Preview:</h3>
+                    <div id="signature-preview" class="w-full overflow-x-auto p-3 border border-gray-300 rounded-md bg-white min-h-[200px]">
+                        {/* Signature will be rendered here */}
+                    </div>
+                     <button id="copy-preview" class="btn btn-primary mt-3 w-full sm:w-auto py-2 px-4 rounded-md font-medium">Copy Signature (for pasting directly)</button>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-3">HTML Code (for advanced users):</h3>
+                    <textarea id="html-code" readonly class="w-full h-48 p-3 border border-gray-300 rounded-md bg-gray-50 text-sm font-mono focus:outline-none focus:border-blue-500" aria-label="HTML code for the signature"></textarea>
+                    <button id="copy-html" class="btn btn-secondary mt-3 w-full sm:w-auto py-2 px-4 rounded-md font-medium">Copy HTML Code</button>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-3">How to Use Your Signature:</h3>
+                    <div class="prose prose-sm max-w-none p-4 border border-gray-200 rounded-lg bg-gray-50 text-gray-600 space-y-3">
+                        <p>Follow these steps to add your new signature to your email client:</p>
+                        <ol class="list-decimal list-inside space-y-2">
+                            <li>Click the "<strong>Copy Signature (for pasting directly)</strong>" button above the HTML code. This copies the visual signature to your clipboard.</li>
+                            <li>Open your email client (e.g., Outlook, Gmail, Apple Mail).</li>
+                            <li>
+                                Navigate to the signature settings. This is usually found in:
+                                <ul class="list-disc list-inside pl-5 mt-1 space-y-1">
+                                    <li><strong>Outlook (Desktop):</strong> File → Options → Mail → Signatures...</li>
+                                    <li><strong>Gmail:</strong> Settings (gear icon) → See all settings → General tab → Scroll down to "Signature".</li>
+                                    <li><strong>Apple Mail:</strong> Mail (menu bar) → Preferences (or Settings) → Signatures.</li>
+                                     <li><strong>Outlook.com (Web):</strong> Settings (gear icon) → View all Outlook settings → Account → Signatures.</li>
+                                </ul>
+                            </li>
+                            <li>Create a "New signature" or select one to edit.</li>
+                            <li>Give your signature a name (e.g., "BCAM Standard").</li>
+                            <li>Paste the copied signature directly into the signature editor box. It should appear visually.</li>
+                            <li>Preview the signature in your email client's settings to ensure it looks correct.</li>
+                            <li>Save your new signature. You can then choose it as the default for new emails and/or replies/forwards.</li>
+                            <li>If direct pasting doesn't work perfectly (some email clients are tricky!), you can try the "<strong>Copy HTML Code</strong>" button and paste that if your email client has an "Edit as HTML" option.</li>
+                        </ol>
+                        <p class="mt-2"><strong>Note:</strong> The appearance of HTML signatures can sometimes vary slightly between different email clients due to how they interpret HTML and CSS.</p>
+                    </div>
+                </div>
+                <button id="start-over" class="btn btn-primary w-full py-3 rounded-md text-lg font-semibold">Create Another Signature</button>
+            </section>
+        </main>
+    </div>
+
+    <div id="toast-message">Copied to clipboard!</div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Elements ---
+            const views = {
+                brandSelection: document.getElementById('brand-selection-view'),
+                form: document.getElementById('form-view'),
+                output: document.getElementById('output-view'),
+            };
+            const brandButtons = {
+                bcam: document.getElementById('select-bcam'),
+                sprintlab: document.getElementById('select-sprintlab'),
+            };
+            const backToBrandSelectionButton = document.getElementById('back-to-brand-selection');
+            const backToFormButton = document.getElementById('back-to-form');
+            const startOverButton = document.getElementById('start-over');
+            
+            const signatureForm = document.getElementById('signature-form');
+            const selectedBrandNameSpan = document.getElementById('selected-brand-name');
+            const companyWebsiteP = document.getElementById('companyWebsite');
+            const companyAddressP = document.getElementById('companyAddress');
+
+            const fullNameInput = document.getElementById('fullName');
+            const jobPositionInput = document.getElementById('jobPosition');
+            const phone1Input = document.getElementById('phone1');
+            const phone2Input = document.getElementById('phone2');
+            const emailInput = document.getElementById('email');
+
+            const signaturePreviewDiv = document.getElementById('signature-preview');
+            const htmlCodeTextarea = document.getElementById('html-code');
+            const copyHtmlButton = document.getElementById('copy-html');
+            const copyPreviewButton = document.getElementById('copy-preview'); // New button
+            const toastMessageDiv = document.getElementById('toast-message');
+
+            // --- App State ---
+            let currentView = 'brandSelection';
+            let selectedBrand = null; // 'bcam' or 'sprintlab'
+
+            // --- Brand Data (remains the same as previous version) ---
+             const brandData = {
+                bcam: {
+                    name: 'BCAM',
+                    website: 'https://bcamapp.com',
+                    address: '4 Columbia Court, Norwest, NSW 2153',
+                    logoUrl: 'https://bcamapp.com/assets/images/logos/assets-management-logo.webp',
+                    defaultEmailPlaceholder: 'your.name@bcamapp.com',
+                    lineColor: '#002d7d',
+                    contactIconColor: '#002d7d',
+                    socials: [
+                        { name: 'LinkedIn', url: 'https://www.linkedin.com/company/bcam-app', svg: `<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="22" height="22" viewBox="0 0 24 24" fill="#002d7d"><path d="M19,3H5C3.895,3,3,3.895,3,5v14c0,1.105,0.895,2,2,2h14c1.105,0,2-0.895,2-2V5C21,3.895,20.105,3,19,3z M9,17H6.477v-7H9V17z M7.694,8.717c-0.771,0-1.286-0.514-1.286-1.2s0.514-1.2,1.371-1.2c0.771,0,1.286,0.514,1.286,1.2S8.551,8.717,7.694,8.717z M18,17h-2.442v-3.826c0-1.058-0.651-1.302-0.895-1.302s-1.058,0.163-1.058,1.302c0,0.163,0,3.826,0,3.826h-2.523v-7h2.523v0.977C13.93,10.407,14.581,10,15.802,10C17.023,10,18,10.977,18,13.174V17z"/></svg>` },
+                        { name: 'Facebook', url: 'https://www.facebook.com/profile.php?id=61563093055725', svg: `<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="22" height="22" viewBox="0 0 24 24" fill="#002d7d"><path d="M19,3H5C3.895,3,3,3.895,3,5v14c0,1.105,0.895,2,2,2h7.621v-6.961h-2.343v-2.725h2.343V9.309c0-2.324,1.421-3.591,3.495-3.591c0.699-0.002,1.397,0.034,2.092,0.105v2.43h-1.428c-1.13,0-1.35,0.534-1.35,1.322v1.735h2.7l-0.351,2.725h-2.365V21H19c1.105,0,2-0.895,2-2V5C21,3.895,20.105,3,19,3z"/></svg>` },
+                        { name: 'Instagram', url: 'https://www.instagram.com/bcamapp', svg: `<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="22" height="22" viewBox="0 0 24 24" fill="#002d7d"><path d="M 8 3 C 5.239 3 3 5.239 3 8 L 3 16 C 3 18.761 5.239 21 8 21 L 16 21 C 18.761 21 21 18.761 21 16 L 21 8 C 21 5.239 18.761 3 16 3 L 8 3 z M 18 5 C 18.552 5 19 5.448 19 6 C 19 6.552 18.552 7 18 7 C 17.448 7 17 6.552 17 6 C 17 5.448 17.448 5 18 5 z M 12 7 C 14.761 7 17 9.239 17 12 C 17 14.761 14.761 17 12 17 C 9.239 17 7 14.761 7 12 C 7 9.239 9.239 7 12 7 z M 12 9 A 3 3 0 0 0 9 12 A 3 3 0 0 0 12 15 A 3 3 0 0 0 15 12 A 3 3 0 0 0 12 9 z"/></svg>` },
+                        { name: 'YouTube', url: 'https://www.youtube.com/@BCAMAPP', svg: `<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="22" height="22" viewBox="0 0 24 24" fill="#002d7d"><path d="M21.582,6.186c-0.23-0.86-0.908-1.538-1.768-1.768C18.254,4,12,4,12,4S5.746,4,4.186,4.418 c-0.86,0.23-1.538,0.908-1.768,1.768C2,7.746,2,12,2,12s0,4.254,0.418,5.814c0.23,0.86,0.908,1.538,1.768,1.768C5.746,20,12,20,12,20s6.254,0,7.814-0.418c0.861-0.23,1.538-0.908,1.768-1.768C22,16.254,22,12,22,12S22,7.746,21.582,6.186z M10,15.464V8.536L16,12L10,15.464z"/></svg>` },
+                        { name: 'TikTok', url: 'https://www.tiktok.com/@bcamapp', svg: `<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="22" height="22" viewBox="0 0 24 24" fill="#002d7d"><path d="M 6 3 C 4.3550302 3 3 4.3550302 3 6 L 3 18 C 3 19.64497 4.3550302 21 6 21 L 18 21 C 19.64497 21 21 19.64497 21 18 L 21 6 C 21 4.3550302 19.64497 3 18 3 L 6 3 z M 12 7 L 14 7 C 14 8.005 15.471 9 16 9 L 16 11 C 15.395 11 14.668 10.734156 14 10.285156 L 14 14 C 14 15.654 12.654 17 11 17 C 9.346 17 8 15.654 8 14 C 8 12.346 9.346 11 11 11 L 11 13 C 10.448 13 10 13.449 10 14 C 10 14.551 10.448 15 11 15 C 11.552 15 12 14.551 12 14 L 12 7 z"/></svg>` }
+                    ],
+                    textColor: '#1a1a1a',
+                    nameFontSize: '14pt',
+                    logoHeight: 'auto',
+                    logoWidth: '170px'
+                },
+                sprintlab: {
+                    name: 'SprintLab',
+                    website: 'https://sprintlabsoftware.com',
+                    address: '4 Columbia Court, Norwest, NSW 2153',
+                    logoUrl: 'https://sprintlabsoftware.com/images/logo.png',
+                    defaultEmailPlaceholder: 'your.name@sprintlabsoftware.com',
+                    lineColor: '#27aed8',
+                    contactIconColor: '#27aed8',
+                    socials: [
+                        { name: 'LinkedIn', url: 'https://www.linkedin.com/company/sprintlabsoftware', svg: `<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="22" height="22" viewBox="0 0 24 24" fill="#f47622"><path d="M19,3H5C3.895,3,3,3.895,3,5v14c0,1.105,0.895,2,2,2h14c1.105,0,2-0.895,2-2V5C21,3.895,20.105,3,19,3z M9,17H6.477v-7H9V17z M7.694,8.717c-0.771,0-1.286-0.514-1.286-1.2s0.514-1.2,1.371-1.2c0.771,0,1.286,0.514,1.286,1.2S8.551,8.717,7.694,8.717z M18,17h-2.442v-3.826c0-1.058-0.651-1.302-0.895-1.302s-1.058,0.163-1.058,1.302c0,0.163,0,3.826,0,3.826h-2.523v-7h2.523v0.977C13.93,10.407,14.581,10,15.802,10C17.023,10,18,10.977,18,13.174V17z"/></svg>` }
+                    ],
+                    textColor: '#1a1a1a',
+                    nameFontSize: '14pt',
+                    logoHeight: '45px',
+                    logoWidth: 'auto'
+                }
+            };
+            const contactIcons = {
+                phone: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="{ICON_COLOR}"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>`,
+                email: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="{ICON_COLOR}"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>`,
+                website: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="{ICON_COLOR}"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>`,
+                address: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="{ICON_COLOR}"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>`
+            };
+
+
+            // --- Functions ---
+            function switchView(viewName) {
+                currentView = viewName;
+                Object.values(views).forEach(view => view.classList.remove('active'));
+                if (views[viewName]) {
+                    views[viewName].classList.add('active');
+                }
+                window.scrollTo(0, 0);
+            }
+
+            function selectBrand(brandKey) {
+                selectedBrand = brandKey;
+                const data = brandData[brandKey];
+                Object.values(brandButtons).forEach(button => button.classList.remove('selected', 'border-blue-600'));
+                brandButtons[brandKey].classList.add('selected', 'border-blue-600');
+                selectedBrandNameSpan.textContent = data.name;
+                companyWebsiteP.textContent = data.website.replace('https://','').replace('http://','');
+                companyAddressP.textContent = data.address;
+                emailInput.placeholder = data.defaultEmailPlaceholder;
+                switchView('form');
+            }
+            
+            function generateSignatureHTML(brand, details) {
+                const data = brandData[brand];
+                let phoneHtml = '';
+                if (details.phone1 && details.phone2) {
+                    phoneHtml = `<a href="tel:+61${details.phone1.replace(/\s/g, '')}" style="color: ${data.textColor}; text-decoration: none;">${details.phone1}</a> <span style="color: ${data.lineColor}; padding: 0 3px;">|</span> <a href="tel:+61${details.phone2.replace(/\s/g, '')}" style="color: ${data.textColor}; text-decoration: none;">${details.phone2}</a>`;
+                } else if (details.phone1) {
+                    phoneHtml = `<a href="tel:+61${details.phone1.replace(/\s/g, '')}" style="color: ${data.textColor}; text-decoration: none;">${details.phone1}</a>`;
+                } else if (details.phone2) {
+                     phoneHtml = `<a href="tel:+61${details.phone2.replace(/\s/g, '')}" style="color: ${data.textColor}; text-decoration: none;">${details.phone2}</a>`;
+                }
+
+                let socialIconsHtml = data.socials.map(social => `
+                    <a href="${social.url}" target="_blank" style="text-decoration: none; margin-left: 8px; display: inline-block; vertical-align: middle;">
+                        <img src="data:image/svg+xml;charset=UTF-8,${encodeURIComponent(social.svg)}" alt="${social.name}" style="width:22px; height:22px; border:0; display: block; vertical-align: middle;">
+                    </a>`).join('');
+
+                return `
+                    <table role="presentation" style="font-family: 'Inter', Arial, Helvetica, sans-serif; color: ${data.textColor}; width: 100%; max-width: 580px; border-spacing: 0; border-collapse: collapse; font-size: 9pt; border: 0; background-color: #ffffff;">
+                        <tr style="border: 0;">
+                            <td style="padding: 0 20px 10px 0; vertical-align: top; width: 40%; border: 0; line-height: 1.4;">
+                                <p style="margin: 0 0 4px 0; font-size: ${data.nameFontSize}; font-weight: bold; color: ${data.textColor}; line-height: 1.3;">${details.fullName}</p>
+                                <p style="margin: 0 0 4px 0; line-height: 1.3; font-size: 9pt;">${details.jobPosition}</p>
+                                <p style="margin: 0; line-height: 1.3; font-size: 9pt; color: ${data.textColor};">${data.name}</p>
+                            </td>
+                            <td style="width: 1px; min-width: 1px; max-width: 1px; background-color: ${data.lineColor}; padding: 0; border: 0; font-size: 0px; line-height: 0px;"> </td>
+                            <td style="padding: 0 0 10px 20px; vertical-align: top; width: auto; border: 0;">
+                                <table role="presentation" style="border-collapse: collapse; width: 100%; font-size: 9pt; border-spacing: 0;">
+                                    ${phoneHtml ? `
+                                    <tr style="border: 0;">
+                                        <td style="padding: 0 10px 6px 0; vertical-align: middle; width: 20px; border: 0; line-height: 1;">
+                                            <img src="data:image/svg+xml;charset=UTF-8,${encodeURIComponent(contactIcons.phone.replace('{ICON_COLOR}', data.contactIconColor))}" alt="Phone" style="width:16px; height:16px; border:0; display: block; vertical-align: middle;">
+                                        </td>
+                                        <td style="padding: 0 0 6px 0; vertical-align: middle; border: 0; line-height: 1.4;">${phoneHtml}</td>
+                                    </tr>` : ''}
+                                    <tr style="border: 0;">
+                                        <td style="padding: 0 10px 6px 0; vertical-align: middle; width: 20px; border: 0; line-height: 1;">
+                                            <img src="data:image/svg+xml;charset=UTF-8,${encodeURIComponent(contactIcons.email.replace('{ICON_COLOR}', data.contactIconColor))}" alt="Email" style="width:16px; height:16px; border:0; display: block; vertical-align: middle;">
+                                        </td>
+                                        <td style="padding: 0 0 6px 0; vertical-align: middle; border: 0; line-height: 1.4;"><a href="mailto:${details.email}" style="color: ${data.textColor}; text-decoration: none;">${details.email}</a></td>
+                                    </tr>
+                                    <tr style="border: 0;">
+                                        <td style="padding: 0 10px 6px 0; vertical-align: middle; width: 20px; border: 0; line-height: 1;">
+                                            <img src="data:image/svg+xml;charset=UTF-8,${encodeURIComponent(contactIcons.website.replace('{ICON_COLOR}', data.contactIconColor))}" alt="Website" style="width:16px; height:16px; border:0; display: block; vertical-align: middle;">
+                                        </td>
+                                        <td style="padding: 0 0 6px 0; vertical-align: middle; border: 0; line-height: 1.4;"><a href="${data.website}" target="_blank" style="color: ${data.textColor}; text-decoration: none;">${data.website.replace('https://','').replace('http://','')}</a></td>
+                                    </tr>
+                                    <tr style="border: 0;">
+                                        <td style="padding: 0 10px 0 0; vertical-align: top; width: 20px; border: 0; line-height: 1.4;">
+                                            <img src="data:image/svg+xml;charset=UTF-8,${encodeURIComponent(contactIcons.address.replace('{ICON_COLOR}', data.contactIconColor))}" alt="Address" style="width:16px; height:16px; border:0; display: block; vertical-align: middle;">
+                                        </td>
+                                        <td style="padding: 0; vertical-align: top; border: 0; line-height: 1.4;">${data.address}</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr style="border: 0;">
+                            <td colspan="3" style="padding: 15px 0; border: 0; font-size: 0px; line-height: 0px;">
+                                <div style="height: 1px; min-height: 1px; max-height: 1px; background-color: ${data.lineColor}; width: 100%; font-size: 0px; line-height: 0px;"> </div>
+                            </td>
+                        </tr>
+                        <tr style="border: 0;">
+                            <td style="padding: 0; vertical-align: middle; width: auto; border: 0; text-align: left;">
+                                <a href="${data.website}" target="_blank" style="text-decoration: none;">
+                                    <img src="${data.logoUrl}" alt="${data.name} Logo" style="height: ${data.logoHeight}; width: ${data.logoWidth}; border: 0; display: block; vertical-align: middle;">
+                                </a>
+                            </td>
+                            <td style="padding:0; border: 0; width: 1px; min-width:1px; max-width:1px;"> </td>
+                            <td style="padding: 0; vertical-align: middle; width: auto; text-align: right; border: 0;">
+                                ${socialIconsHtml}
+                            </td>
+                        </tr>
+                    </table>`;
+            }
+
+            function showToast(message) {
+                toastMessageDiv.textContent = message;
+                toastMessageDiv.classList.add('show');
+                setTimeout(() => {
+                    toastMessageDiv.classList.remove('show');
+                }, 3000);
+            }
+
+            // --- Event Listeners ---
+            brandButtons.bcam.addEventListener('click', () => selectBrand('bcam'));
+            brandButtons.sprintlab.addEventListener('click', () => selectBrand('sprintlab'));
+
+            backToBrandSelectionButton.addEventListener('click', () => switchView('brandSelection'));
+            backToFormButton.addEventListener('click', () => switchView('form'));
+            startOverButton.addEventListener('click', () => {
+                signatureForm.reset();
+                switchView('brandSelection');
+            });
+
+            signatureForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const userDetails = {
+                    fullName: fullNameInput.value.trim(),
+                    jobPosition: jobPositionInput.value.trim(),
+                    phone1: phone1Input.value.trim(),
+                    phone2: phone2Input.value.trim(),
+                    email: emailInput.value.trim(),
+                };
+
+                if (!selectedBrand || !userDetails.fullName || !userDetails.jobPosition || !userDetails.email) {
+                    // Using a more user-friendly way to show errors instead of alert()
+                    showToast("Please fill all required fields.");
+                    // Highlight missing fields (basic example)
+                    if (!userDetails.fullName) fullNameInput.classList.add('border-red-500'); else fullNameInput.classList.remove('border-red-500');
+                    if (!userDetails.jobPosition) jobPositionInput.classList.add('border-red-500'); else jobPositionInput.classList.remove('border-red-500');
+                    if (!userDetails.email) emailInput.classList.add('border-red-500'); else emailInput.classList.remove('border-red-500');
+                    return;
+                } else {
+                     fullNameInput.classList.remove('border-red-500');
+                     jobPositionInput.classList.remove('border-red-500');
+                     emailInput.classList.remove('border-red-500');
+                }
+
+                if (!userDetails.phone1 && !userDetails.phone2) {
+                    showToast("Please provide at least one phone number.");
+                    phone1Input.classList.add('border-red-500');
+                    return;
+                } else {
+                    phone1Input.classList.remove('border-red-500');
+                }
+
+                const generatedHtml = generateSignatureHTML(selectedBrand, userDetails);
+                signaturePreviewDiv.innerHTML = generatedHtml;
+                htmlCodeTextarea.value = generatedHtml.trim().replace(/^  +/gm, '');
+                switchView('output');
+            });
+
+            copyHtmlButton.addEventListener('click', () => {
+                htmlCodeTextarea.select();
+                htmlCodeTextarea.setSelectionRange(0, 99999);
+                try {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(htmlCodeTextarea.value)
+                            .then(() => showToast('HTML code copied!'))
+                            .catch(err => {
+                                document.execCommand('copy');
+                                showToast('HTML code copied (fallback)!');
+                            });
+                    } else {
+                        document.execCommand('copy');
+                        showToast('HTML code copied!');
+                    }
+                } catch (err) {
+                    showToast('Failed to copy HTML. Please copy manually.');
+                }
+            });
+
+            copyPreviewButton.addEventListener('click', () => {
+                const previewContent = signaturePreviewDiv.innerHTML;
+                if (!previewContent) {
+                    showToast('Nothing to copy from preview.');
+                    return;
+                }
+
+                try {
+                    if (navigator.clipboard && navigator.clipboard.write) {
+                        const blob = new Blob([previewContent], { type: 'text/html' });
+                        const data = [new ClipboardItem({ [blob.type]: blob })];
+                        navigator.clipboard.write(data)
+                            .then(() => showToast('Signature copied! Paste directly.'))
+                            .catch(err => {
+                                console.error('Failed to copy preview with navigator.clipboard: ', err);
+                                // Fallback to execCommand for rich text (less reliable but worth a try)
+                                const tempDiv = document.createElement('div');
+                                tempDiv.innerHTML = previewContent;
+                                document.body.appendChild(tempDiv);
+                                const range = document.createRange();
+                                range.selectNodeContents(tempDiv);
+                                const selection = window.getSelection();
+                                selection.removeAllRanges();
+                                selection.addRange(range);
+                                try {
+                                    document.execCommand('copy');
+                                    showToast('Signature copied (fallback)! Paste directly.');
+                                } catch (execErr) {
+                                    console.error('execCommand fallback failed: ', execErr);
+                                    showToast('Failed to copy signature. Try copying HTML code.');
+                                } finally {
+                                    selection.removeAllRanges();
+                                    document.body.removeChild(tempDiv);
+                                }
+                            });
+                    } else {
+                         // Fallback for older browsers or when navigator.clipboard.write is not available
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = previewContent;
+                        document.body.appendChild(tempDiv);
+                        const range = document.createRange();
+                        range.selectNodeContents(tempDiv);
+                        const selection = window.getSelection();
+                        selection.removeAllRanges();
+                        selection.addRange(range);
+                        try {
+                            document.execCommand('copy');
+                            showToast('Signature copied! Paste directly.');
+                        } catch (execErr) {
+                             console.error('execCommand failed: ', execErr);
+                            showToast('Failed to copy signature. Try copying HTML code.');
+                        } finally {
+                            selection.removeAllRanges();
+                            document.body.removeChild(tempDiv);
+                        }
+                    }
+                } catch (err) {
+                    console.error('Failed to copy signature preview: ', err);
+                    showToast('Failed to copy signature. Try copying HTML code.');
+                }
+            });
+
+            // Initialize the first view
+            switchView('brandSelection'); 
+        });
+    </script>
+</body>
+</html>
