@@ -63,10 +63,10 @@
         .btn-outline:hover {
             background-color: #f9fafb; /* Gray-50 */
         }
-        .input-field {
+        .input-field, .country-code-select {
             border-color: #d1d5db; /* Gray-300 */
         }
-        .input-field:focus {
+        .input-field:focus, .country-code-select:focus {
             border-color: #2563eb; /* Blue-600 */
             box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4); /* Blue focus ring */
         }
@@ -100,7 +100,7 @@
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background-color: #10b981; /* Green-500 */
+            background-color: #10b981; /* Green-500 for success */
             color: white;
             padding: 10px 20px;
             border-radius: 8px;
@@ -109,8 +109,28 @@
             transition: opacity 0.5s ease-in-out;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
+        #toast-message.error {
+            background-color: #ef4444; /* Red-500 for error */
+        }
         #toast-message.show {
             opacity: 1;
+        }
+        .phone-input-group {
+            display: flex;
+            align-items: center;
+        }
+        .country-code-select {
+            padding: 0.75rem; /* p-3 equivalent */
+            border-radius: 0.375rem; /* rounded-md */
+            margin-right: 0.5rem; /* mr-2 */
+            background-color: #f9fafb; /* bg-gray-50 */
+            height: calc(2.25rem + 2px + 0.75rem * 2); /* Match input height (p-3 + border) */
+        }
+        .phone-error-message {
+            font-size: 0.875rem; /* text-sm */
+            color: #ef4444; /* text-red-500 */
+            margin-top: 0.25rem; /* mt-1 */
+            display: none; /* Hidden by default */
         }
     </style>
 </head>
@@ -154,14 +174,33 @@
                         <label for="jobPosition" class="block text-sm font-medium text-gray-700 mb-1">Job Position</label>
                         <input type="text" id="jobPosition" name="jobPosition" required class="input-field w-full p-3 border rounded-md focus:outline-none" placeholder="e.g., Founder/CEO">
                     </div>
+                    
                     <div>
                         <label for="phone1" class="block text-sm font-medium text-gray-700 mb-1">Phone Number 1</label>
-                        <input type="tel" id="phone1" name="phone1" class="input-field w-full p-3 border rounded-md focus:outline-none" placeholder="e.g., 1300 302 644">
+                        <div class="phone-input-group">
+                            <select id="countryCode1" name="countryCode1" class="country-code-select border rounded-md focus:outline-none">
+                                <option value="+61" data-country="AU">AU (+61)</option>
+                                <option value="+94" data-country="LK">LK (+94)</option>
+                                <option value="">None (Local)</option>
+                            </select>
+                            <input type="tel" id="phone1" name="phone1" class="input-field w-full p-3 border rounded-md focus:outline-none" placeholder="e.g., 400123456">
+                        </div>
+                        <span id="phone1Error" class="phone-error-message">Invalid phone number.</span>
                     </div>
+
                     <div>
                         <label for="phone2" class="block text-sm font-medium text-gray-700 mb-1">Phone Number 2 (Optional)</label>
-                        <input type="tel" id="phone2" name="phone2" class="input-field w-full p-3 border rounded-md focus:outline-none" placeholder="e.g., 0400 539 919">
+                         <div class="phone-input-group">
+                            <select id="countryCode2" name="countryCode2" class="country-code-select border rounded-md focus:outline-none">
+                                <option value="+61" data-country="AU">AU (+61)</option>
+                                <option value="+94" data-country="LK">LK (+94)</option>
+                                <option value="">None (Local)</option>
+                            </select>
+                            <input type="tel" id="phone2" name="phone2" class="input-field w-full p-3 border rounded-md focus:outline-none" placeholder="e.g., 711234567">
+                        </div>
+                        <span id="phone2Error" class="phone-error-message">Invalid phone number.</span>
                     </div>
+
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Your Email Address</label>
                         <input type="email" id="email" name="email" required class="input-field w-full p-3 border rounded-md focus:outline-none" placeholder="e.g., your.name@company.com">
@@ -260,21 +299,28 @@
 
             const fullNameInput = document.getElementById('fullName');
             const jobPositionInput = document.getElementById('jobPosition');
+            
+            const countryCode1Select = document.getElementById('countryCode1');
             const phone1Input = document.getElementById('phone1');
+            const phone1ErrorSpan = document.getElementById('phone1Error');
+
+            const countryCode2Select = document.getElementById('countryCode2');
             const phone2Input = document.getElementById('phone2');
+            const phone2ErrorSpan = document.getElementById('phone2Error');
+            
             const emailInput = document.getElementById('email');
 
             const signaturePreviewDiv = document.getElementById('signature-preview');
             const htmlCodeTextarea = document.getElementById('html-code');
             const copyHtmlButton = document.getElementById('copy-html');
-            const copyPreviewButton = document.getElementById('copy-preview'); // New button
+            const copyPreviewButton = document.getElementById('copy-preview');
             const toastMessageDiv = document.getElementById('toast-message');
 
             // --- App State ---
             let currentView = 'brandSelection';
-            let selectedBrand = null; // 'bcam' or 'sprintlab'
+            let selectedBrand = null; 
 
-            // --- Brand Data (remains the same as previous version) ---
+            // --- Brand Data ---
              const brandData = {
                 bcam: {
                     name: 'BCAM',
@@ -313,12 +359,34 @@
                     logoWidth: 'auto'
                 }
             };
-            const contactIcons = {
+            const contactIcons = { 
                 phone: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="{ICON_COLOR}"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>`,
                 email: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="{ICON_COLOR}"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>`,
                 website: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="{ICON_COLOR}"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>`,
                 address: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="{ICON_COLOR}"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>`
             };
+            const phoneValidationRules = {
+                '+61': { 
+                    regex: /^(?:4\d{8}|[2378]\d{8}|13\d{4}|1[38]00\d{6})$/, // Number part after +61, no leading 0
+                    errorMessage: 'Enter AU number without leading 0 (e.g., 4xxxxxxxx, 2xxxxxxxx, 13xxxx, 1300xxxxxx).',
+                    placeholder: 'e.g. 400123456'
+                },
+                '+94': { 
+                    regex: /^[1-9]\d{8}$/, // Number part after +94, no leading 0
+                    errorMessage: 'Enter 9 digits for SL number, no leading 0 (e.g., 771234567).',
+                    placeholder: 'e.g. 771234567'
+                },
+                '': { // No country code selected - user enters full national number
+                    regex: /^[0-9\s]{7,15}$/, // Generic: 7-15 digits/spaces
+                    errorMessage: 'Please enter a valid local phone number (7-15 digits).',
+                    placeholder: 'e.g. 0400123456 or 0771234567'
+                }
+            };
+
+            function updatePhoneInputPlaceholder(countryCodeSelect, phoneInput) {
+                const selectedRule = phoneValidationRules[countryCodeSelect.value];
+                phoneInput.placeholder = selectedRule?.placeholder || phoneValidationRules[''].placeholder;
+            }
 
 
             // --- Functions ---
@@ -340,19 +408,80 @@
                 companyWebsiteP.textContent = data.website.replace('https://','').replace('http://','');
                 companyAddressP.textContent = data.address;
                 emailInput.placeholder = data.defaultEmailPlaceholder;
+                signatureForm.reset(); 
+                countryCode1Select.value = "+61"; 
+                countryCode2Select.value = "+61";
+                updatePhoneInputPlaceholder(countryCode1Select, phone1Input);
+                updatePhoneInputPlaceholder(countryCode2Select, phone2Input);
+                phone1ErrorSpan.style.display = 'none';
+                phone2ErrorSpan.style.display = 'none';
+                phone1Input.classList.remove('border-red-500');
+                phone2Input.classList.remove('border-red-500');
                 switchView('form');
             }
             
+            function validatePhoneNumber(numberStr, countryCode) {
+                const rule = phoneValidationRules[countryCode];
+                if (!rule) return true; 
+                const cleanedNumber = numberStr.replace(/\s/g, ''); 
+                return rule.regex.test(cleanedNumber);
+            }
+
+            function formatDisplayPhoneNumber(numberStr, countryCode) {
+                const cleanedNumber = numberStr.replace(/\s/g, '');
+
+                if (countryCode === "+61") {
+                    if (/^4\d{8}$/.test(cleanedNumber)) { // Mobile: 4XX XXX XXX
+                        return `${countryCode} ${cleanedNumber.substring(0,1)} ${cleanedNumber.substring(1,4)} ${cleanedNumber.substring(4,7)} ${cleanedNumber.substring(7,10)}`;
+                    } else if (/^[2378]\d{8}$/.test(cleanedNumber)) { // Landline (State based)
+                        return `${countryCode} ${cleanedNumber.substring(0,1)} ${cleanedNumber.substring(1,5)} ${cleanedNumber.substring(5,9)}`;
+                    } else if (/^13\d{4}$/.test(cleanedNumber)) { // 13 XX XX
+                        return `${countryCode} ${cleanedNumber.substring(0,2)} ${cleanedNumber.substring(2,4)} ${cleanedNumber.substring(4,6)}`;
+                    } else if (/^1[38]00\d{6}$/.test(cleanedNumber)) { // 1300/1800 XXX XXX
+                        return `${countryCode} ${cleanedNumber.substring(0,4)} ${cleanedNumber.substring(4,7)} ${cleanedNumber.substring(7,10)}`;
+                    }
+                    return `${countryCode} ${cleanedNumber}`; 
+                } else if (countryCode === "+94") {
+                    if (/^[1-9]\d{8}$/.test(cleanedNumber)) { 
+                        return `${countryCode} ${cleanedNumber.substring(0,2)} ${cleanedNumber.substring(2,5)} ${cleanedNumber.substring(5,9)}`;
+                    }
+                    return `${countryCode} ${cleanedNumber}`; 
+                } else { // No country code ("")
+                    if (/^04\d{8}$/.test(cleanedNumber)) { 
+                        return `${cleanedNumber.substring(0,4)} ${cleanedNumber.substring(4,7)} ${cleanedNumber.substring(7,10)}`;
+                    } else if (/^0[2378]\d{8}$/.test(cleanedNumber)) { 
+                        return `${cleanedNumber.substring(0,2)} ${cleanedNumber.substring(2,6)} ${cleanedNumber.substring(6,10)}`;
+                    } else if (/^13\d{4}$/.test(cleanedNumber)) { 
+                        return `${cleanedNumber.substring(0,2)} ${cleanedNumber.substring(2,4)} ${cleanedNumber.substring(4,6)}`;
+                    } else if (/^1[38]00\d{6}$/.test(cleanedNumber)) { 
+                        return `${cleanedNumber.substring(0,4)} ${cleanedNumber.substring(4,7)} ${cleanedNumber.substring(7,10)}`;
+                    } else if (/^0[1-9]\d{8}$/.test(cleanedNumber)) { 
+                        return `${cleanedNumber.substring(0,3)} ${cleanedNumber.substring(3,6)} ${cleanedNumber.substring(6,10)}`;
+                    }
+                    return numberStr; 
+                }
+            }
+
+
             function generateSignatureHTML(brand, details) {
                 const data = brandData[brand];
                 let phoneHtml = '';
-                if (details.phone1 && details.phone2) {
-                    phoneHtml = `<a href="tel:+61${details.phone1.replace(/\s/g, '')}" style="color: ${data.textColor}; text-decoration: none;">${details.phone1}</a> <span style="color: ${data.lineColor}; padding: 0 3px;">|</span> <a href="tel:+61${details.phone2.replace(/\s/g, '')}" style="color: ${data.textColor}; text-decoration: none;">${details.phone2}</a>`;
-                } else if (details.phone1) {
-                    phoneHtml = `<a href="tel:+61${details.phone1.replace(/\s/g, '')}" style="color: ${data.textColor}; text-decoration: none;">${details.phone1}</a>`;
-                } else if (details.phone2) {
-                     phoneHtml = `<a href="tel:+61${details.phone2.replace(/\s/g, '')}" style="color: ${data.textColor}; text-decoration: none;">${details.phone2}</a>`;
+                const phoneNumbersForHtml = [];
+
+                if (details.phone1) {
+                    const cleanedPhone1 = details.phone1.replace(/\s/g, '');
+                    const displayNum1 = formatDisplayPhoneNumber(details.phone1, details.countryCode1);
+                    const linkNum1 = details.countryCode1 ? `${details.countryCode1}${cleanedPhone1}` : cleanedPhone1;
+                    phoneNumbersForHtml.push(`<a href="tel:${linkNum1}" style="color: ${data.textColor}; text-decoration: none;">${displayNum1}</a>`);
                 }
+                if (details.phone2) {
+                    const cleanedPhone2 = details.phone2.replace(/\s/g, '');
+                    const displayNum2 = formatDisplayPhoneNumber(details.phone2, details.countryCode2);
+                    const linkNum2 = details.countryCode2 ? `${details.countryCode2}${cleanedPhone2}` : cleanedPhone2;
+                    phoneNumbersForHtml.push(`<a href="tel:${linkNum2}" style="color: ${data.textColor}; text-decoration: none;">${displayNum2}</a>`);
+                }
+                phoneHtml = phoneNumbersForHtml.join(` <span style="color: ${data.lineColor}; padding: 0 3px;">|</span> `);
+
 
                 let socialIconsHtml = data.socials.map(social => `
                     <a href="${social.url}" target="_blank" style="text-decoration: none; margin-left: 8px; display: inline-block; vertical-align: middle;">
@@ -417,8 +546,12 @@
                     </table>`;
             }
 
-            function showToast(message) {
+            function showToast(message, isError = false) {
                 toastMessageDiv.textContent = message;
+                toastMessageDiv.classList.remove('error');
+                if (isError) {
+                    toastMessageDiv.classList.add('error');
+                }
                 toastMessageDiv.classList.add('show');
                 setTimeout(() => {
                     toastMessageDiv.classList.remove('show');
@@ -433,40 +566,78 @@
             backToFormButton.addEventListener('click', () => switchView('form'));
             startOverButton.addEventListener('click', () => {
                 signatureForm.reset();
+                countryCode1Select.value = "+61"; 
+                countryCode2Select.value = "+61";
+                updatePhoneInputPlaceholder(countryCode1Select, phone1Input);
+                updatePhoneInputPlaceholder(countryCode2Select, phone2Input);
+                phone1ErrorSpan.style.display = 'none';
+                phone2ErrorSpan.style.display = 'none';
+                phone1Input.classList.remove('border-red-500');
+                phone2Input.classList.remove('border-red-500');
                 switchView('brandSelection');
             });
+            
+            countryCode1Select.addEventListener('change', () => updatePhoneInputPlaceholder(countryCode1Select, phone1Input));
+            countryCode2Select.addEventListener('change', () => updatePhoneInputPlaceholder(countryCode2Select, phone2Input));
+
 
             signatureForm.addEventListener('submit', (event) => {
                 event.preventDefault();
+                let isValid = true;
+
                 const userDetails = {
                     fullName: fullNameInput.value.trim(),
                     jobPosition: jobPositionInput.value.trim(),
+                    countryCode1: countryCode1Select.value,
                     phone1: phone1Input.value.trim(),
+                    countryCode2: countryCode2Select.value,
                     phone2: phone2Input.value.trim(),
                     email: emailInput.value.trim(),
                 };
 
-                if (!selectedBrand || !userDetails.fullName || !userDetails.jobPosition || !userDetails.email) {
-                    // Using a more user-friendly way to show errors instead of alert()
-                    showToast("Please fill all required fields.");
-                    // Highlight missing fields (basic example)
-                    if (!userDetails.fullName) fullNameInput.classList.add('border-red-500'); else fullNameInput.classList.remove('border-red-500');
-                    if (!userDetails.jobPosition) jobPositionInput.classList.add('border-red-500'); else jobPositionInput.classList.remove('border-red-500');
-                    if (!userDetails.email) emailInput.classList.add('border-red-500'); else emailInput.classList.remove('border-red-500');
-                    return;
-                } else {
-                     fullNameInput.classList.remove('border-red-500');
-                     jobPositionInput.classList.remove('border-red-500');
-                     emailInput.classList.remove('border-red-500');
-                }
+                phone1ErrorSpan.style.display = 'none';
+                phone1Input.classList.remove('border-red-500');
+                phone2ErrorSpan.style.display = 'none';
+                phone2Input.classList.remove('border-red-500');
+                fullNameInput.classList.remove('border-red-500');
+                jobPositionInput.classList.remove('border-red-500');
+                emailInput.classList.remove('border-red-500');
 
-                if (!userDetails.phone1 && !userDetails.phone2) {
-                    showToast("Please provide at least one phone number.");
-                    phone1Input.classList.add('border-red-500');
-                    return;
-                } else {
-                    phone1Input.classList.remove('border-red-500');
+
+                if (!selectedBrand || !userDetails.fullName || !userDetails.jobPosition || !userDetails.email) {
+                    showToast("Please fill all required fields.", true);
+                    if (!userDetails.fullName) fullNameInput.classList.add('border-red-500');
+                    if (!userDetails.jobPosition) jobPositionInput.classList.add('border-red-500');
+                    if (!userDetails.email) emailInput.classList.add('border-red-500');
+                    isValid = false;
                 }
+                
+                if (!userDetails.phone1 && !userDetails.phone2) {
+                    showToast("Please provide at least one phone number.", true);
+                    phone1Input.classList.add('border-red-500');
+                     phone1ErrorSpan.textContent = "At least one phone number is required.";
+                    phone1ErrorSpan.style.display = 'block';
+                    isValid = false;
+                } else {
+                    if (userDetails.phone1) {
+                        if (!validatePhoneNumber(userDetails.phone1, userDetails.countryCode1)) {
+                            phone1ErrorSpan.textContent = phoneValidationRules[userDetails.countryCode1].errorMessage;
+                            phone1ErrorSpan.style.display = 'block';
+                            phone1Input.classList.add('border-red-500');
+                            isValid = false;
+                        }
+                    }
+                    if (userDetails.phone2) { // Only validate if phone2 is provided
+                        if (!validatePhoneNumber(userDetails.phone2, userDetails.countryCode2)) {
+                            phone2ErrorSpan.textContent = phoneValidationRules[userDetails.countryCode2].errorMessage;
+                            phone2ErrorSpan.style.display = 'block';
+                            phone2Input.classList.add('border-red-500');
+                            isValid = false;
+                        }
+                    }
+                }
+                
+                if (!isValid) return;
 
                 const generatedHtml = generateSignatureHTML(selectedBrand, userDetails);
                 signaturePreviewDiv.innerHTML = generatedHtml;
@@ -490,14 +661,14 @@
                         showToast('HTML code copied!');
                     }
                 } catch (err) {
-                    showToast('Failed to copy HTML. Please copy manually.');
+                    showToast('Failed to copy HTML. Please copy manually.', true);
                 }
             });
 
             copyPreviewButton.addEventListener('click', () => {
                 const previewContent = signaturePreviewDiv.innerHTML;
                 if (!previewContent) {
-                    showToast('Nothing to copy from preview.');
+                    showToast('Nothing to copy from preview.', true);
                     return;
                 }
 
@@ -509,7 +680,6 @@
                             .then(() => showToast('Signature copied! Paste directly.'))
                             .catch(err => {
                                 console.error('Failed to copy preview with navigator.clipboard: ', err);
-                                // Fallback to execCommand for rich text (less reliable but worth a try)
                                 const tempDiv = document.createElement('div');
                                 tempDiv.innerHTML = previewContent;
                                 document.body.appendChild(tempDiv);
@@ -523,14 +693,13 @@
                                     showToast('Signature copied (fallback)! Paste directly.');
                                 } catch (execErr) {
                                     console.error('execCommand fallback failed: ', execErr);
-                                    showToast('Failed to copy signature. Try copying HTML code.');
+                                    showToast('Failed to copy signature. Try copying HTML code.', true);
                                 } finally {
                                     selection.removeAllRanges();
                                     document.body.removeChild(tempDiv);
                                 }
                             });
                     } else {
-                         // Fallback for older browsers or when navigator.clipboard.write is not available
                         const tempDiv = document.createElement('div');
                         tempDiv.innerHTML = previewContent;
                         document.body.appendChild(tempDiv);
@@ -544,7 +713,7 @@
                             showToast('Signature copied! Paste directly.');
                         } catch (execErr) {
                              console.error('execCommand failed: ', execErr);
-                            showToast('Failed to copy signature. Try copying HTML code.');
+                            showToast('Failed to copy signature. Try copying HTML code.', true);
                         } finally {
                             selection.removeAllRanges();
                             document.body.removeChild(tempDiv);
@@ -552,11 +721,14 @@
                     }
                 } catch (err) {
                     console.error('Failed to copy signature preview: ', err);
-                    showToast('Failed to copy signature. Try copying HTML code.');
+                    showToast('Failed to copy signature. Try copying HTML code.', true);
                 }
             });
 
-            // Initialize the first view
+            // Initialize placeholders on load
+            updatePhoneInputPlaceholder(countryCode1Select, phone1Input);
+            updatePhoneInputPlaceholder(countryCode2Select, phone2Input);
+            
             switchView('brandSelection'); 
         });
     </script>
