@@ -33,6 +33,34 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     /**
+     * Applies a 3D tilt effect to the hero mockup image based on global mouse position.
+     */
+    const setupInteractiveMockup = () => {
+        const image = document.getElementById('mockup-image');
+
+        if (!image) return;
+
+        const intensity = 5; // How much the image should tilt. Higher is more.
+
+        // Listen for mouse movement on the entire window
+        window.addEventListener('mousemove', (e) => {
+            const { innerWidth, innerHeight } = window;
+
+            // Calculate mouse position from the center of the window (-1 to 1 range)
+            const mouseX = (e.clientX / innerWidth) * 2 - 1;
+            const mouseY = (e.clientY / innerHeight) * 2 - 1;
+            
+            const rotateY = mouseX * intensity;
+            const rotateX = -mouseY * intensity;
+            
+            // Use requestAnimationFrame for a smoother animation
+            requestAnimationFrame(() => {
+                 image.style.transform = `perspective(1500px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+        });
+    };
+
+    /**
      * Sets up a fallback for scroll animations using IntersectionObserver
      * for browsers that don't support CSS scroll-driven animations.
      */
@@ -124,9 +152,59 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         window.addEventListener('resize', onWindowResize, { passive: true });
     };
-    
+
+    /**
+     * Handles the functionality for the donation modal.
+     */
+    const setupDonateModal = () => {
+        const modal = document.getElementById('donate-modal');
+        const openButton = document.getElementById('donate-button');
+        const closeButton = document.getElementById('close-modal-button');
+        const copyButtons = document.querySelectorAll('.copy-button');
+
+        if (!modal || !openButton || !closeButton) return;
+
+        const openModal = () => modal.classList.remove('hidden');
+        const closeModal = () => modal.classList.add('hidden');
+
+        openButton.addEventListener('click', openModal);
+        closeButton.addEventListener('click', closeModal);
+        
+        // Close modal if user clicks on the background overlay
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Handle copy to clipboard functionality
+        copyButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const textToCopy = button.dataset.copyText;
+                
+                // Create a temporary textarea to perform the copy command
+                const textArea = document.createElement('textarea');
+                textArea.value = textToCopy;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    // Visual feedback
+                    button.textContent = 'Copied!';
+                    button.classList.add('copied');
+                    setTimeout(() => {
+                        button.textContent = 'Copy';
+                        button.classList.remove('copied');
+                    }, 2000);
+                } catch (err) {
+                    console.error('Failed to copy text: ', err);
+                }
+                document.body.removeChild(textArea);
+            });
+        });
+    };
+
     // --- BLOG POPULATION LOGIC ---
-    // This is the corrected and more robust logic.
     const runBlogLogic = () => {
         // First, check if the blog data is available.
         if (typeof blogPosts === 'undefined' || !Array.isArray(blogPosts) || blogPosts.length === 0) {
@@ -171,8 +249,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- INITIALIZE ALL SCRIPTS ---
     setupHeaderScroll();
     setupBentoGlow();
+    setupInteractiveMockup();
     setupScrollAnimationFallback();
     initFlowFieldBackground();
-    runBlogLogic(); // Run the corrected blog logic
+    setupDonateModal();
+    runBlogLogic();
 
 });

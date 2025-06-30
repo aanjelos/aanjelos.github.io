@@ -6,19 +6,19 @@
     <title>Kaasi - The Lankan Finance Manager 🇱🇰</title>
     
     <!-- Meta Tags for SEO and Social Sharing -->
-    <meta name="description" content="Kaasi helps you manage your money (LKR) with ease. Track transactions, monitor balances, and get insights, all securely on your device. Take control of your finances today." />
+    <meta name="description" content="Kaasi helps Sri Lankans manage money (LKR) effortlessly. Track daily transactions, monitor account balances, and get monthly reports. Your financial data is stored securely on your device." />
     <meta name="keywords" content="expense tracker, finance app, sri lanka, lkr, budget, money management, personal finance, kaasi" />
     <meta name="author" content="Aanjelo Salgado" />
     
     <meta property="og:title" content="Kaasi - The Lankan Finance Manager 🇱🇰" />
-    <meta property="og:description" content="Manage your money with ease. Track transactions, monitor balances, and get insights, all securely on your device." />
+    <meta property="og:description" content="Kaasi helps Sri Lankans manage money (LKR) effortlessly. Track daily transactions, monitor account balances, and get monthly reports. Your financial data is stored securely on your device." />
     <meta property="og:image" content="https://aanjelos.github.io/kaasi/img/Metaimg.jpg" />
     <meta property="og:url" content="https://aanjelos.github.io/kaasi/" />
     <meta property="og:type" content="website" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Kaasi - The Lankan Finance Manager 🇱🇰" />
-    <meta name="twitter:description" content="Manage your money with ease. Track transactions, monitor balances, and get insights, all securely on your device." />
+    <meta name="twitter:description" content="Kaasi helps Sri Lankans manage money (LKR) effortlessly. Track daily transactions, monitor account balances, and get monthly reports. Your financial data is stored securely on your device." />
     <meta name="twitter:image" content="https://aanjelos.github.io/kaasi/img/Metaimg.jpg" />
 
     <!-- Favicon -->
@@ -41,16 +41,17 @@
     <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <a href="index.html" class="flex items-center gap-2">
-                <img src="img/LogoIcon.svg" alt="Kaasi Icon" class="h-8 w-8" onerror="this.onerror=null; this.src='https://placehold.co/40x40/1a1a1a/e67e26?text=K&font=satoshi';"/>
-                <span class="text-white text-xl font-bold">Kaasi</span>
+                <!-- LOGO CHANGE: Using FullLogo.svg -->
+                <img src="img/FullLogo.svg" alt="Kaasi Logo" class="h-8" onerror="this.onerror=null; this.src='https://placehold.co/100x32/1a1a1a/e67e26?text=Kaasi&font=satoshi';"/>
             </a>
             <nav class="hidden md:flex items-center gap-8">
                 <a href="#features" class="nav-link">Features</a>
                 <a href="#whats-next" class="nav-link">What's Next</a>
                 <a href="blog.html" class="nav-link">Blog</a>
-                <a href="#privacy" class="nav-link">Privacy</a>
+                <!-- HEADER NAV: Changed Privacy to The Story -->
+                <a href="#story" class="nav-link">The Story</a>
             </nav>
-            <a href="https://aanjelos.github.io/kaasi/" class="cta-button">
+            <a href="https://aanjelos.github.io/kaasi/" target="_blank" class="cta-button">
                 <span>Go to App</span> <i class="fas fa-arrow-right"></i>
             </a>
         </div>
@@ -59,10 +60,12 @@
     <div id="content-wrapper" class="relative z-10">
         <main>
             <!-- Hero Section -->
-            <section class="min-h-screen flex items-center justify-center pt-32 pb-20 text-center overflow-hidden">
+            <section class="min-h-screen flex items-center justify-center pt-40 pb-20 text-center overflow-hidden">
                 <div class="container mx-auto px-6">
                     <div class="animate-fade-in-up">
-                        <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-400 mb-6 leading-tight">
+                        <!-- LOGO ADDED: FullLogo.svg above the main title -->
+                        <img src="img/FullLogo.svg" alt="Kaasi Logo" class="h-12 md:h-16 mx-auto mb-8" onerror="this.onerror=null; this.src='https://placehold.co/200x64/121212/e67e26?text=Kaasi&font=satoshi';"/>
+                        <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
                             The Lankan Finance Manager 🇱🇰
                         </h1>
                         <p class="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto mb-10">
@@ -79,12 +82,13 @@
                     </div>
 
                     <!-- App Mockup -->
-                    <div class="mt-24 animate-fade-in-up" style="--delay: 0.3s;">
-                        <div class="relative mx-auto w-full max-w-5xl">
+                    <div class="mt-20 animate-fade-in-up" style="--delay: 0.3s;">
+                        <!-- MOCKUP SIZE: Made slightly smaller to accommodate logo -->
+                        <div id="mockup-container" class="relative mx-auto w-full max-w-4xl">
                              <div class="absolute -inset-2">
-                                <div class="w-full h-full max-w-5xl mx-auto rounded-2xl bg-gradient-to-r from-orange-600 via-orange-400 to-orange-600 opacity-10 blur-3xl"></div>
+                                <div class="w-full h-full max-w-4xl mx-auto rounded-2xl bg-gradient-to-r from-orange-600 via-orange-400 to-orange-600 opacity-10 blur-3xl"></div>
                             </div>
-                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop" onerror="this.onerror=null; this.src='https://placehold.co/1200x600/18181b/3f3f46?text=Kaasi+Dashboard';" alt="Kaasi App Dashboard Mockup" class="relative w-full h-auto object-cover object-top rounded-xl border-2 border-gray-800/80 shadow-2xl shadow-black/80">
+                            <img id="mockup-image" src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop" onerror="this.onerror=null; this.src='https://placehold.co/1200x600/18181b/3f3f46?text=Kaasi+Dashboard';" alt="Kaasi App Dashboard Mockup" class="relative w-full h-auto object-cover object-top rounded-xl border-2 border-gray-800/80 shadow-2xl shadow-black/80">
                         </div>
                     </div>
                 </section>
@@ -97,44 +101,46 @@
                         <p class="text-lg text-gray-400 animate-on-scroll" style="--delay: 0.1s;">Everything you need to be in control of your financial life.</p>
                     </div>
                     
-                    <div class="grid grid-cols-6 grid-rows-2 gap-6">
-                        <!-- Card 1: Dashboard -->
-                        <div class="bento-card col-span-6 lg:col-span-4 animate-on-scroll">
-                            <i class="fas fa-chart-pie bento-icon text-blue-400"></i>
-                            <h3 class="bento-title">Comprehensive Dashboard</h3>
-                            <p class="bento-text">At-a-glance view of total balances, quick stats, and a chart of your monthly income vs. expenses.</p>
-                            <img src="https://images.unsplash.com/photo-1611926653458-092a4234cf54?q=80&w=2038&auto=format&fit=crop" onerror="this.onerror=null; this.src='https://placehold.co/800x400/18181b/3f3f46?text=Dashboard+UI';" alt="Dashboard UI" class="bento-image-large">
+                    <div class="flex flex-col gap-6">
+                        <!-- Top Row -->
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <!-- BENTO BOX CONTENT: Updated Dashboard card -->
+                            <div class="bento-card lg:col-span-2 animate-on-scroll">
+                                <i class="fas fa-chart-pie bento-icon text-blue-400"></i>
+                                <h3 class="bento-title">Detailed Expense Breakdowns</h3>
+                                <p class="bento-text">Track your daily spending and get a clear, visual breakdown of your expenses each month. See exactly where your money goes.</p>
+                                <img src="https://images.unsplash.com/photo-1611926653458-092a4234cf54?q=80&w=2038&auto=format&fit=crop" onerror="this.onerror=null; this.src='https://placehold.co/800x400/18181b/3f3f46?text=Dashboard+UI';" alt="Dashboard UI" class="bento-image-large">
+                            </div>
+
+                            <div class="bento-card animate-on-scroll" style="--delay: 0.1s;">
+                                <i class="fas fa-user-shield bento-icon text-green-400"></i>
+                                <h3 class="bento-title">100% Private</h3>
+                                <p class="bento-text">All data is stored exclusively in your browser using localStorage. Nothing is ever sent to a server. Your financial data remain yours.</p>
+                                 <div class="mt-4 flex justify-center items-center h-full bg-grid-pattern rounded-lg">
+                                     <i class="fas fa-lock text-6xl text-green-400/50"></i>
+                                 </div>
+                            </div>
                         </div>
 
-                        <!-- Card 2: Privacy -->
-                        <div class="bento-card col-span-6 lg:col-span-2 animate-on-scroll" style="--delay: 0.1s;">
-                            <i class="fas fa-user-shield bento-icon text-green-400"></i>
-                            <h3 class="bento-title">100% Private</h3>
-                            <p class="bento-text">All data is stored exclusively in your browser using localStorage. Nothing is ever sent to a server. Your financial data remain yours.</p>
-                             <div class="mt-4 flex justify-center items-center h-full bg-grid-pattern rounded-lg">
-                                 <i class="fas fa-lock text-6xl text-green-400/50"></i>
-                             </div>
-                        </div>
+                        <!-- Bottom Row -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="bento-card animate-on-scroll" style="--delay: 0.2s;">
+                               <i class="fas fa-hand-holding-usd bento-icon text-red-400"></i>
+                                <h3 class="bento-title">Debts & Receivables</h3>
+                                <p class="bento-text">Easily track who you owe and who owes you. Never lose track of a friendly loan again.</p>
+                            </div>
+                            
+                            <div class="bento-card animate-on-scroll" style="--delay: 0.3s;">
+                                 <i class="fas fa-sliders-h bento-icon text-orange-400"></i>
+                                <h3 class="bento-title">Fully Customizable</h3>
+                                <p class="bento-text">Rename accounts, add or remove expense categories, and set credit card limits. Make Kaasi truly yours.</p>
+                            </div>
 
-                        <!-- Card 3: Debts -->
-                        <div class="bento-card col-span-6 md:col-span-3 lg:col-span-2 animate-on-scroll" style="--delay: 0.2s;">
-                           <i class="fas fa-hand-holding-usd bento-icon text-red-400"></i>
-                            <h3 class="bento-title">Debts & Receivables</h3>
-                            <p class="bento-text">Easily track who you owe and who owes you. Never lose track of a friendly loan again.</p>
-                        </div>
-                        
-                        <!-- Card 4: Customization -->
-                        <div class="bento-card col-span-6 md:col-span-3 lg:col-span-2 animate-on-scroll" style="--delay: 0.3s;">
-                             <i class="fas fa-sliders-h bento-icon text-orange-400"></i>
-                            <h3 class="bento-title">Fully Customizable</h3>
-                            <p class="bento-text">Rename accounts, add or remove expense categories, and set credit card limits. Make Kaasi truly yours.</p>
-                        </div>
-
-                        <!-- Card 5: Data Management -->
-                        <div class="bento-card col-span-6 lg:col-span-2 animate-on-scroll" style="--delay: 0.4s;">
-                           <i class="fas fa-file-export bento-icon text-purple-400"></i>
-                           <h3 class="bento-title">Data Management</h3>
-                           <p class="bento-text">Your data is yours. Export and import your entire financial history with a single click.</p>
+                            <div class="bento-card animate-on-scroll" style="--delay: 0.4s;">
+                               <i class="fas fa-file-export bento-icon text-purple-400"></i>
+                               <h3 class="bento-title">Data Management</h3>
+                               <p class="bento-text">Your data is yours. Export and import your entire financial history with a single click.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -147,26 +153,32 @@
                         <h2 class="text-4xl md:text-5xl font-bold text-white mb-4 animate-on-scroll">Always Getting Better</h2>
                         <p class="text-lg text-gray-400 animate-on-scroll" style="--delay: 0.1s;">Kaasi is actively developed. Here's what's on the horizon.</p>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- WHAT'S NEXT: Changed items-center to items-stretch -->
+                    <div class="flex flex-wrap items-stretch justify-center gap-8">
                         <div class="next-feature-card animate-on-scroll">
                             <i class="fab fa-google-drive"></i>
                             <h3>Google Drive Sync</h3>
                             <p>For seamless, private cloud backups.</p>
                         </div>
                         <div class="next-feature-card animate-on-scroll" style="--delay: 0.1s;">
-                            <i class="fas fa-chart-line"></i>
-                            <h3>Advanced Reports</h3>
-                            <p>Deeper insights with more graphs.</p>
-                        </div>
-                         <div class="next-feature-card animate-on-scroll" style="--delay: 0.2s;">
-                            <i class="fas fa-search"></i>
-                            <h3>CC Search</h3>
-                            <p>Find any credit card transaction instantly.</p>
-                        </div>
-                         <div class="next-feature-card animate-on-scroll" style="--delay: 0.3s;">
                             <i class="fab fa-android"></i>
                             <h3>Android App</h3>
                             <p>Your finances, on the go.</p>
+                        </div>
+                         <div class="next-feature-card animate-on-scroll" style="--delay: 0.2s;">
+                            <i class="fas fa-sun"></i>
+                            <h3>Light Mode</h3>
+                            <p>But why would anyone ever use it?</p>
+                        </div>
+                         <div class="next-feature-card animate-on-scroll" style="--delay: 0.3s;">
+                            <i class="fas fa-language"></i>
+                            <h3>Sinhala Language Support</h3>
+                            <p>Full interface translations are coming soon.</p>
+                        </div>
+                         <div class="next-feature-card animate-on-scroll" style="--delay: 0.4s;">
+                            <i class="fas fa-search"></i>
+                            <h3>CC Search</h3>
+                            <p>Find any credit card transaction instantly.</p>
                         </div>
                     </div>
                 </div>
@@ -189,21 +201,6 @@
                     </div>
                 </div>
             </section>
-            
-            <!-- Privacy Section
-            <section id="privacy" class="py-24 md:py-32">
-                <div class="container mx-auto px-6">
-                    <div class="text-center">
-                        <div class="inline-block p-5 bg-green-500/10 rounded-full mb-6 animate-on-scroll">
-                            <i class="fas fa-shield-alt text-4xl text-green-400"></i>
-                        </div>
-                        <h2 class="text-4xl md:text-5xl font-bold text-white mb-4 animate-on-scroll" style="--delay: 0.1s;">Your Data Stays on Your Device.</h2>
-                        <p class="text-lg text-gray-400 max-w-3xl mx-auto mb-8 animate-on-scroll" style="--delay: 0.2s;">
-                            Kaasi is built on the principle of absolute privacy. It runs entirely in your browser using Local Storage, which means your financial information never leaves your device.
-                        </p>
-                    </div>
-                </div>
-            </section> -->
 
             <!-- Project Story Section -->
             <section id="story" class="py-24 md:py-32">
@@ -212,11 +209,29 @@
                      <h2 class="text-3xl md:text-4xl font-bold text-white mb-6 animate-on-scroll" style="--delay: 0.1s;">From a Personal Need to a Public Tool</h2>
                      <div class="text-lg text-gray-400 space-y-4 animate-on-scroll" style="--delay: 0.2s;">
                         <p>
-                            After three years of managing my finances in a Google Sheet, I wanted a more streamlined, private, and offline-first solution. Kaasi was born from that need—a practical tool built for my own use, now shared with the hope that it can help you too.
+                            For about three years, I managed my finances in a Google Sheet. It was my trusted system because most budgeting apps missed key features, had ads, or raised privacy concerns.
+                        </p>
+                        <p>
+                           So, I started experimenting with AI tools to build my own solution. After about 20 days and dozens of iterations with Google's Gemini, Kaasi was born. It's the tool I always wanted: simple, powerful, completely private, and still improving. I built Kaasi for myself, but I hope it can help you manage your <span class="text-orange-500 font-semibold">කාසි</span> better, too.
                         </p>
                         <p class="font-semibold text-gray-300">- Aanjelo Salgado</p>
                      </div>
                  </div>
+            </section>
+
+            <!-- NEW: Donate Section -->
+            <section id="donate" class="py-24 md:py-32 border-t border-gray-800/60">
+                <div class="container mx-auto px-6 max-w-4xl text-center">
+                    <div class="animate-on-scroll">
+                        <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Support Kaasi's Development</h2>
+                        <p class="text-lg text-gray-400 max-w-3xl mx-auto mb-10">
+                            Your donation helps keep Kaasi free and in active development. Since the AI subscriptions used for development are quite expensive, and I want to keep Kaasi free for everyone, your kind support is greatly appreciated!
+                        </p>
+                        <button id="donate-button" class="cta-button-large">
+                            Show Bank Details
+                        </button>
+                    </div>
+                </div>
             </section>
             
         </main>
@@ -224,18 +239,57 @@
 
     <!-- Footer -->
     <footer class="relative z-10 border-t border-gray-800/50 bg-[#121212]">
-        <div class="container mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center text-center md:text-left gap-6">
+        <div class="container mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center text-center md:text-left gap-8">
             <div class="flex items-center gap-3">
                  <img src="img/LogoIcon.svg" alt="Kaasi Logo Icon" class="h-6" onerror="this.onerror=null; this.src='https://placehold.co/24x24/1a1a1a/e67e26?text=K&font=satoshi';"/>
                  <span class="text-gray-500 text-sm">&copy; 2025 Kaasi by Aanjelo Salgado.</span>
             </div>
+            <!-- NEW: Social Media Icons -->
+            <div class="flex items-center gap-6 text-gray-400">
+                <a href="https://www.linkedin.com/company/kaasi-lk" target="_blank" class="hover:text-white transition-colors"><i class="fab fa-linkedin-in text-xl"></i></a>
+                <a href="https://www.instagram.com/kaasi.lk/" target="_blank" class="hover:text-white transition-colors"><i class="fab fa-instagram text-xl"></i></a>
+                <a href="https://www.facebook.com/profile.php?id=61576800639923" target="_blank" class="hover:text-white transition-colors"><i class="fab fa-facebook-f text-xl"></i></a>
+            </div>
             <div class="text-sm text-gray-500">
-                <p>Earn Well And Spend Responsibly!</p>
+                <p>Earn Well, and Spend Responsibly! 💸</p>
             </div>
         </div>
     </footer>
 
-    <!-- JS Libraries -->
+    <!-- NEW: Donate Modal -->
+    <div id="donate-modal" class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+        <div class="modal-content bg-[#18181B] rounded-2xl p-8 max-w-md w-full border border-gray-700 relative">
+            <button id="close-modal-button" class="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+            <h3 class="text-2xl font-bold text-white mb-6">Bank Details</h3>
+            <div class="space-y-6">
+                <!-- HNB Account -->
+                <div>
+                    <p class="font-bold text-lg text-orange-400">HNB (Negombo)</p>
+                    <p class="text-gray-300">Name: MALSW Goonaratne</p>
+                    <div class="flex items-center justify-between mt-2 bg-gray-800 p-3 rounded-lg">
+                        <span class="text-lg text-gray-200">0240 2065 9091</span>
+                        <button class="copy-button bg-gray-700 hover:bg-gray-600 text-white font-bold py-1 px-3 rounded-md transition-colors" data-copy-text="024020659091">
+                            Copy
+                        </button>
+                    </div>
+                </div>
+                <!-- Commercial Account -->
+                <div>
+                    <p class="font-bold text-lg text-orange-400">Commercial Bank (Negombo 2)</p>
+                    <p class="text-gray-300">Name: MALSW Goonaratne</p>
+                    <div class="flex items-center justify-between mt-2 bg-gray-800 p-3 rounded-lg">
+                        <span class="text-lg text-gray-200">8009 650 486</span>
+                        <button class="copy-button bg-gray-700 hover:bg-gray-600 text-white font-bold py-1 px-3 rounded-md transition-colors" data-copy-text="8009650486">
+                            Copy
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="blog-data.js"></script>
     <script src="script.js"></script>
