@@ -29,6 +29,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css" />
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-2FSRSWZB28"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-2FSRSWZB28");
+    </script>
 </head>
 
 <body class="bg-[#121212] text-gray-300 font-satoshi antialiased">
@@ -53,6 +66,7 @@
                 <span>Go to App</span> <i class="fas fa-arrow-right"></i>
             </a>
         </div>
+        
     </header>
 
     <div id="content-wrapper" class="relative z-10">
@@ -99,6 +113,16 @@
             </div>
         </div>
     </footer>
+
+    <!-- Go to Top Button -->
+    <a
+      href="#"
+      id="go-to-top-button"
+      title="Go to top"
+      class="fixed bottom-8 right-8 z-50 flex h-12 w-12 items-center justify-center rounded-md bg-orange-500 text-white shadow-lg opacity-0 transition-all duration-300 pointer-events-none hover:bg-orange-600 hover:scale-110"
+    >
+      <i class="fas fa-arrow-up"></i>
+    </a>
 
     <!-- JS Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
