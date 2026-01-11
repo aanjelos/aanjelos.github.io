@@ -3,6 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="A curated collection of board games owned by Aanjelo. Browse, sort, and request games for the next meetup.">
+    <meta name="theme-color" content="#1F1F1F">
+    
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Aanjelo's Board Game Library">
+    <meta property="og:description" content="Check out my board game collection and request games for our next meetup.">
+
     <title>Aanjelo's Board Game Library</title>
     
     <!-- React & ReactDOM -->
@@ -23,7 +31,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&display=swap');
         @import url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap');
         
-        body { font-family: 'Satoshi', sans-serif; background-color: #1F1F1F; color: #F1F1F1; overflow-x: hidden; }
+        body { font-family: 'Satoshi', sans-serif; background-color: #1F1F1F; color: #F1F1F1; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
         
         /* Font Utility Classes */
         .font-serif { font-family: 'Instrument Serif', serif; }
@@ -35,10 +43,6 @@
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #C51728; }
         
-        .accent-text { color: #C51728; }
-        .accent-bg { background-color: #C51728; }
-        .accent-border { border-color: #C51728; }
-        
         /* Utility for ownership visual state */
         .not-owned { opacity: 0.5; filter: grayscale(0.8); }
         .not-owned:hover { opacity: 0.8; filter: grayscale(0); }
@@ -46,6 +50,13 @@
         /* Hide scrollbar for horizontal scroll areas on mobile */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Animation classes */
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .animate-slide-up { animation: slideUp 0.3s ease-out forwards; }
     </style>
 </head>
 <body>
@@ -56,20 +67,16 @@
 
         // --- CONFIGURATION ---
         const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ058IHDO-lSXB4DKKkc8Lu1sU_eVVNsahQ4zAbleIRJgQbAAG1aYGVU1Pxxn3tvRH4FDR9GmSUft6H/pub?output=csv"; 
-        
+        const REQUEST_LIMIT = 6;
+
         // --- ICONS ---
         const Icons = {
             Search: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>,
             LayoutGrid: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>,
             List: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" x2="21" y1="6" y2="6"/><line x1="8" x2="21" y1="12" y2="12"/><line x1="8" x2="21" y1="18" y2="18"/><line x1="3" x2="3.01" y1="6" y2="6"/><line x1="3" x2="3.01" y1="12" y2="12"/><line x1="3" x2="3.01" y1="18" y2="18"/></svg>,
             SortAsc: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="M11 4h10"/><path d="M11 8h7"/><path d="M11 12h4"/></svg>,
-            Trophy: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>,
             Hash: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" x2="20" y1="9" y2="9"/><line x1="4" x2="20" y1="15" y2="15"/><line x1="10" x2="8" y1="3" y2="21"/><line x1="16" x2="14" y1="3" y2="21"/></svg>,
-            Dice: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><path d="M16 8h.01"/><path d="M8 8h.01"/><path d="M8 16h.01"/><path d="M16 16h.01"/><path d="M12 12h.01"/></svg>,
             Box: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>,
-            Activity: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>,
-            Monitor: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>,
-            Calculator: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg>,
             Clock: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
             Briefcase: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>,
             Zap: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
@@ -82,7 +89,11 @@
             Users: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
             ShoppingBag: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>,
             Banknote: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>,
-            D20: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5M2 12l10 5 10-5"/></svg>
+            Monitor: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>,
+            Calculator: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg>,
+            Check: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
+            WhatsApp: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>,
+            Clipboard: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
         };
 
         // --- HELPERS ---
@@ -113,7 +124,6 @@
             return (values.reduce((a, b) => a + b, 0) / values.length).toFixed(1);
         };
 
-        // FLIPPED: 1 = Easiest, 10 = Hardest
         const getComplexityLabel = (val) => {
             if (!val) return '-';
             const v = Math.round(parseFloat(val));
@@ -123,14 +133,6 @@
                 9: "Heavy", 10: "Impossible"
             };
             return labels[Math.max(1, Math.min(10, v))] || "Moderate";
-        };
-
-        const getRatingColor = (rating) => {
-            if (!rating) return 'text-[#F1F1F1]/40';
-            const r = parseFloat(rating);
-            if (r >= 8.5) return 'text-[#C51728] font-bold'; 
-            if (r >= 8) return 'text-[#F1F1F1]';
-            return 'text-[#F1F1F1]/70';
         };
 
         const parsePrice = (priceStr) => {
@@ -151,6 +153,14 @@
             if (!min && max) return `Up to ${max}`;
             return `${min}-${max}`;
         }
+
+        const generateRequestMessage = (selectedGames) => {
+            let msg = "Hi, here is my request list for the meetup:\n\n";
+            selectedGames.forEach((game, idx) => {
+                msg += `${idx + 1}. *${game.name}* (${formatPlayers(game.minPlayers, game.maxPlayers)} Players, ${game.playTime}m)\n`;
+            });
+            return msg;
+        };
 
         // --- COMPONENTS ---
 
@@ -173,16 +183,52 @@
             </button>
         );
 
-        function GameCard({ game, viewMode, onOpenDetail }) {
+        function GameCard({ game, viewMode, onOpenDetail, isRequestMode, isSelected, onToggleSelect }) {
             const isGrid = viewMode === 'grid';
             const isOwned = game.owned;
+            
+            const handleClick = (e) => {
+                if (isRequestMode) {
+                    onToggleSelect(game);
+                } else {
+                    onOpenDetail(game);
+                }
+            };
+
+            // Request Mode Overlay Logic
+            const requestOverlay = isRequestMode && (
+                <>
+                    {isSelected && (
+                        <div className="absolute inset-0 border-[3px] border-[#C51728] rounded-3xl z-20 pointer-events-none flex items-start justify-end p-2 md:p-3">
+                            <div className="bg-[#C51728] text-white rounded-full p-1 shadow-lg">
+                                <Icons.Check className="w-4 h-4 md:w-5 md:h-5" />
+                            </div>
+                        </div>
+                    )}
+                    {!isOwned && (
+                        <div className="absolute inset-0 bg-[#1F1F1F]/60 backdrop-grayscale z-30 flex items-center justify-center cursor-not-allowed rounded-2xl md:rounded-3xl">
+                            {/* Visual disabled state */}
+                        </div>
+                    )}
+                </>
+            );
             
             if (!isGrid) {
                 return (
                     <div 
-                        onClick={() => onOpenDetail(game)}
-                        className={`group flex items-center gap-3 md:gap-6 border p-3 md:p-4 rounded-2xl transition-all cursor-pointer ${isOwned ? 'bg-[#F1F1F1]/5 border-[#F1F1F1]/5 hover:bg-[#F1F1F1]/10 hover:border-[#C51728]/30' : 'bg-[#F1F1F1]/[0.02] border-[#F1F1F1]/5 not-owned'}`}
+                        onClick={handleClick}
+                        className={`group flex items-center gap-3 md:gap-6 border p-3 md:p-4 rounded-2xl transition-all cursor-pointer relative overflow-hidden
+                            ${isRequestMode && isSelected ? 'bg-[#C51728]/10 border-[#C51728]' : ''}
+                            ${!isRequestMode && isOwned ? 'bg-[#F1F1F1]/5 border-[#F1F1F1]/5 hover:bg-[#F1F1F1]/10 hover:border-[#C51728]/30' : ''} 
+                            ${!isRequestMode && !isOwned ? 'bg-[#F1F1F1]/[0.02] border-[#F1F1F1]/5 not-owned' : ''}
+                            ${isRequestMode && !isOwned ? 'opacity-40' : ''}
+                        `}
                     >
+                         {/* List View Selection Indicator */}
+                         {isRequestMode && isSelected && (
+                            <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[#C51728]" />
+                        )}
+
                         <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl overflow-hidden shrink-0 bg-[#000]/20 flex items-center justify-center relative">
                             {game.image ? (
                                 <img src={game.image} alt={game.name} className="w-full h-full object-cover" />
@@ -231,9 +277,15 @@
 
             return (
                 <div 
-                    onClick={() => onOpenDetail(game)}
-                    className={`group relative border rounded-3xl overflow-hidden transition-all duration-300 cursor-pointer flex flex-col h-full ${isOwned ? 'bg-[#F1F1F1]/5 border-[#F1F1F1]/5 hover:border-[#C51728]/40 hover:shadow-2xl hover:shadow-[#C51728]/10' : 'bg-[#F1F1F1]/[0.02] border-[#F1F1F1]/5 not-owned'}`}
+                    onClick={handleClick}
+                    className={`group relative border rounded-3xl overflow-hidden transition-all duration-300 cursor-pointer flex flex-col h-full 
+                        ${isRequestMode && isSelected ? 'bg-[#1F1F1F]' : ''}
+                        ${!isRequestMode && isOwned ? 'bg-[#F1F1F1]/5 border-[#F1F1F1]/5 hover:border-[#C51728]/40 hover:shadow-2xl hover:shadow-[#C51728]/10' : 'bg-[#F1F1F1]/[0.02] border-[#F1F1F1]/5'}
+                        ${!isOwned && !isRequestMode ? 'not-owned' : ''}
+                    `}
                 >
+                    {requestOverlay}
+
                     <div className="relative w-full aspect-[4/3] bg-[#000]/30 overflow-hidden">
                         {game.image ? (
                             <img src={game.image} alt={game.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100" />
@@ -252,7 +304,7 @@
                             </div>
                         )}
                         
-                        {!isOwned && (
+                        {!isOwned && !isRequestMode && (
                             <div className="absolute top-3 left-3 bg-[#000]/60 backdrop-blur text-[#F1F1F1]/60 text-[10px] px-2 py-1 rounded-full border border-[#F1F1F1]/10 uppercase font-bold tracking-widest">
                                 Not Owned
                             </div>
@@ -260,14 +312,12 @@
                     </div>
 
                     <div className="flex-1 flex flex-col justify-end relative z-10 -mt-20"> 
-                        {/* Game Name adjusted to sit right on top of the black box content */}
                         <div className="px-3 md:px-6 pb-2 min-h-[50px] md:min-h-[60px] flex items-end justify-start">
                             <h3 className={`font-serif-italic text-base md:text-2xl leading-tight mb-2 transition-colors drop-shadow-md line-clamp-2 ${isOwned ? 'text-[#F1F1F1] group-hover:text-[#C51728]' : 'text-[#F1F1F1]/50'}`} title={game.name}>
                                 {game.name}
                             </h3>
                         </div>
 
-                        {/* Black box scores section */}
                         <div className="bg-[#1F1F1F] p-2 md:p-4 pt-3 md:pt-4 border-t border-[#F1F1F1]/10 rounded-b-3xl">
                             <div className="grid grid-cols-3 gap-1 md:gap-2">
                                 <div className="text-center">
@@ -289,11 +339,56 @@
             );
         }
 
+        function RequestBar({ selectedGames }) {
+            if (selectedGames.length === 0) return null;
+
+            const message = generateRequestMessage(selectedGames);
+
+            const handleWhatsApp = () => {
+                const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
+                window.open(url, '_blank');
+            };
+
+            const handleCopy = () => {
+                navigator.clipboard.writeText(message);
+                // Could add a small 'Copied' toast here if desired, 
+                // but simpler to just do the action for now.
+            };
+
+            return (
+                <>
+                    {/* Backdrop Gradient Blur */}
+                    <div className="fixed bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#1F1F1F] via-[#1F1F1F]/90 to-transparent z-40 pointer-events-none transition-opacity duration-500" />
+                    
+                    <div className="fixed bottom-6 left-0 right-0 px-4 md:px-0 z-50 flex justify-center animate-slide-up">
+                        <div className="bg-[#1F1F1F] border border-[#F1F1F1]/10 shadow-2xl rounded-full p-2 pl-6 flex items-center gap-4 max-w-lg w-full ring-1 ring-[#C51728]/20">
+                            <div className="flex flex-col justify-center">
+                                <div className="text-xs text-[#F1F1F1]/40 uppercase font-bold tracking-widest">Request</div>
+                                <div className="text-[#F1F1F1] font-bold">{selectedGames.length} Game{selectedGames.length !== 1 ? 's' : ''}</div>
+                            </div>
+                            
+                            <div className="flex-1" />
+
+                            <div className="flex items-center gap-2">
+                                <button onClick={handleCopy} className="p-3 rounded-full hover:bg-[#F1F1F1]/10 text-[#F1F1F1]/60 hover:text-white transition-colors" title="Copy Text">
+                                    <Icons.Clipboard />
+                                </button>
+                                
+                                <button onClick={handleWhatsApp} className="bg-[#25D366] hover:bg-[#128C7E] text-white p-3 rounded-full shadow-lg transition-colors flex items-center gap-2">
+                                     <Icons.WhatsApp />
+                                     <span className="font-bold text-sm hidden sm:inline">Send</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </>
+            );
+        }
+
         function GameDetailModal({ game, onClose }) {
             if (!game) return null;
             const isOwned = game.owned;
 
-            // Stop click propagation inside the modal
             const handleContentClick = (e) => {
                 e.stopPropagation();
             }
@@ -307,7 +402,6 @@
                         className="bg-[#1F1F1F] border-t md:border border-[#F1F1F1]/10 rounded-t-3xl md:rounded-3xl w-full max-w-4xl h-[95vh] md:h-auto md:max-h-[90vh] shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 md:fade-in md:zoom-in-95 duration-200 relative"
                         onClick={handleContentClick}
                     >
-                         {/* Close Button - Absolute Top Right */}
                          <button 
                             onClick={onClose} 
                             className="absolute top-4 right-4 z-50 p-2.5 bg-black/20 hover:bg-black/40 backdrop-blur-md rounded-full text-white/80 hover:text-white border border-white/10 transition-all cursor-pointer leading-none"
@@ -354,10 +448,8 @@
                             </div>
                         </div>
 
-                        {/* Bottom: Detailed Breakdown */}
                         <div className="flex-1 bg-[#1F1F1F] overflow-y-auto">
                             <div className="p-6 md:p-10 space-y-8 md:space-y-10">
-                                {/* Metadata Row */}
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-[#F1F1F1]/5 rounded-2xl border border-[#F1F1F1]/5 text-xs">
                                     <div>
                                         <div className="text-[#F1F1F1]/40 mb-1">Acquired</div>
@@ -377,7 +469,6 @@
                                     </div>
                                 </div>
 
-                                {/* Calculation Breakdown */}
                                 <section>
                                     <h3 className="text-xs font-bold text-[#F1F1F1]/40 tracking-widest mb-4 md:mb-6 flex items-center gap-2">
                                         <Icons.Calculator className="w-4 h-4" /> Scoring Breakdown
@@ -425,7 +516,6 @@
                                                 </div>
                                             </div>
 
-                                            {/* ADDED BACK: Player Count Card */}
                                             <div className={`p-3 md:p-4 rounded-2xl border ${game.minPlayers || game.maxPlayers ? 'bg-[#F1F1F1]/5 border-[#F1F1F1]/10' : 'bg-transparent border-[#F1F1F1]/5 opacity-30'} transition-colors`}>
                                                 <div className="text-[10px] text-[#F1F1F1]/40 tracking-widest truncate mb-2 flex items-center gap-1.5">
                                                     <Icons.Users className="w-3 h-3" />
@@ -516,6 +606,11 @@
             const [viewMode, setViewMode] = useState('grid'); 
             const [selectedGame, setSelectedGame] = useState(null);
             const [showMSRP, setShowMSRP] = useState(false);
+            
+            // New Request Feature States
+            const [isRequestMode, setIsRequestMode] = useState(false);
+            const [selectedRequestGames, setSelectedRequestGames] = useState([]);
+            const [toastMessage, setToastMessage] = useState(null);
 
             useEffect(() => {
                 const fetchData = () => {
@@ -587,6 +682,38 @@
                 fetchData();
             }, []);
 
+            // Toast Logic
+            useEffect(() => {
+                if (toastMessage) {
+                    const timer = setTimeout(() => setToastMessage(null), 3000);
+                    return () => clearTimeout(timer);
+                }
+            }, [toastMessage]);
+
+            const handleToggleSelect = (game) => {
+                if (!game.owned) return; // Guard clause just in case
+
+                const isAlreadySelected = selectedRequestGames.find(g => g.id === game.id);
+
+                if (isAlreadySelected) {
+                    setSelectedRequestGames(prev => prev.filter(g => g.id !== game.id));
+                } else {
+                    if (selectedRequestGames.length >= REQUEST_LIMIT) {
+                        setToastMessage("That's heavy! I can only carry so many boxes!");
+                        return;
+                    }
+                    setSelectedRequestGames(prev => [...prev, game]);
+                }
+            };
+
+            const toggleRequestMode = () => {
+                const newMode = !isRequestMode;
+                setIsRequestMode(newMode);
+                if (!newMode) {
+                    setSelectedRequestGames([]); // Clear on exit? Or keep? User didn't specify, clearing is cleaner.
+                }
+            };
+
             const filteredGames = useMemo(() => {
                 let result = games.map(game => {
                     const myAvgObj = calculateMyAverage(game.baseScore, game.subScores || {});
@@ -632,18 +759,11 @@
 
             const stats = useMemo(() => {
                 const totalGames = games.length;
-                
-                // Calculate Total Price (Including Expansions)
                 let totalPrice = 0;
                 let totalMSRP = 0;
-
-                // We iterate over the 'rootGames' (which is what 'games' state holds)
                 games.forEach(game => {
-                    // Add main game price
                     totalPrice += game.price || 0;
                     totalMSRP += game.msrp || 0;
-
-                    // Add expansion prices
                     if (game.expansions && game.expansions.length > 0) {
                         game.expansions.forEach(exp => {
                             totalPrice += exp.price || 0;
@@ -651,34 +771,51 @@
                         });
                     }
                 });
-
-                return { 
-                    total: totalGames, 
-                    totalPrice: showMSRP ? totalMSRP : totalPrice 
-                };
+                return { total: totalGames, totalPrice: showMSRP ? totalMSRP : totalPrice };
             }, [games, showMSRP]);
 
             return (
-                <div className="min-h-screen bg-[#1F1F1F] text-[#F1F1F1] selection:bg-[#C51728]/30 selection:text-white pb-20 md:pb-0">
+                <div className="min-h-screen bg-[#1F1F1F] text-[#F1F1F1] selection:bg-[#C51728]/30 selection:text-white pb-24 md:pb-0">
                     <nav className="border-b border-[#F1F1F1]/5 bg-[#1F1F1F]/95 backdrop-blur-xl sticky top-0 z-40 transition-all">
                         <div className="max-w-7xl mx-auto px-4 md:px-6 min-h-[5rem] md:h-20 py-4 md:py-0 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0">
                             <div className="flex items-center gap-4">
                                 <h1 className="text-2xl md:text-3xl font-serif-italic tracking-wide text-[#F1F1F1] text-center md:text-left">Aanjelo's Board Games Library</h1>
                             </div>
                             <div className="flex items-center gap-2 md:gap-3 flex-wrap justify-center">
-                                <StatsPill icon={Icons.Hash} label="Games" value={stats.total} />
-                                <StatsPill 
-                                    icon={Icons.DollarSign} 
-                                    label={showMSRP ? "Value (MSRP)" : "Spent"} 
-                                    value={`Rs. ${stats.totalPrice.toLocaleString()}`} 
-                                    onClick={() => setShowMSRP(!showMSRP)}
-                                    className="cursor-pointer hover:bg-[#F1F1F1]/10"
-                                />
+                                {/* Desktop Stats - Hidden when request mode is on mobile to save space? Kept for now */}
+                                <div className="hidden md:flex gap-3">
+                                    <StatsPill icon={Icons.Hash} label="Games" value={stats.total} />
+                                    <StatsPill 
+                                        icon={Icons.DollarSign} 
+                                        label={showMSRP ? "Value (MSRP)" : "Spent"} 
+                                        value={`Rs. ${stats.totalPrice.toLocaleString()}`} 
+                                        onClick={() => setShowMSRP(!showMSRP)}
+                                        className="cursor-pointer hover:bg-[#F1F1F1]/10"
+                                    />
+                                </div>
+                                
+                                <button 
+                                    onClick={toggleRequestMode}
+                                    className={`px-4 py-2 rounded-full border text-sm font-bold transition-all flex items-center gap-2
+                                        ${isRequestMode 
+                                            ? 'bg-[#C51728] text-white border-[#C51728] shadow-[0_0_15px_rgba(197,23,40,0.5)]' 
+                                            : 'bg-transparent border-[#C51728] text-[#C51728] hover:bg-[#C51728]/10'}`}
+                                >
+                                    <Icons.ShoppingBag className="w-4 h-4" />
+                                    {isRequestMode ? `Requests (${selectedRequestGames.length}/${REQUEST_LIMIT})` : 'Request Games'}
+                                </button>
                             </div>
                         </div>
                     </nav>
 
                     <main className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
+                         {/* Helper Text for Request Mode */}
+                         {isRequestMode && (
+                            <div className="mb-6 bg-[#C51728]/10 border border-[#C51728]/20 text-[#C51728] px-4 py-3 rounded-xl text-center text-sm md:text-base font-medium animate-slide-up">
+                                Tap games to select for the meetup.
+                            </div>
+                        )}
+
                         {/* Controls */}
                         <div className="flex flex-col md:flex-row gap-4 md:gap-6 mb-8 md:mb-12">
                             <div className="relative flex-1 group">
@@ -722,12 +859,34 @@
                         ) : (
                             <div className={viewMode === 'grid' ? "grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4 lg:gap-8" : "flex flex-col gap-3"}>
                                 {filteredGames.map(game => (
-                                    <GameCard key={game.id} game={game} viewMode={viewMode} onOpenDetail={setSelectedGame} />
+                                    <GameCard 
+                                        key={game.id} 
+                                        game={game} 
+                                        viewMode={viewMode} 
+                                        onOpenDetail={setSelectedGame} 
+                                        isRequestMode={isRequestMode}
+                                        isSelected={selectedRequestGames.some(g => g.id === game.id)}
+                                        onToggleSelect={handleToggleSelect}
+                                    />
                                 ))}
                                 {filteredGames.length === 0 && <div className="col-span-full py-24 text-center text-[#F1F1F1]/40">No games found</div>}
                             </div>
                         )}
                     </main>
+
+                    {/* Toast Message */}
+                    {toastMessage && (
+                        <div className="fixed bottom-24 inset-x-0 flex justify-center z-[70] pointer-events-none animate-slide-up">
+                            <div className="bg-[#C51728] text-white px-6 py-3 rounded-full shadow-2xl font-bold text-sm md:text-base border border-white/10 whitespace-nowrap pointer-events-auto">
+                                {toastMessage}
+                            </div>
+                        </div>
+                    )}
+                    
+                    {/* Floating Request Bar */}
+                    {isRequestMode && (
+                        <RequestBar selectedGames={selectedRequestGames} />
+                    )}
 
                     <GameDetailModal game={selectedGame} onClose={() => setSelectedGame(null)} />
                 </div>
