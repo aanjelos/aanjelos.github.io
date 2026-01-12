@@ -103,14 +103,14 @@
             const baseVal = parseFloat(base) || 0;
             let numerator = baseVal * 10;
             let denominator = 10;
-            let subCount = 0;
             
+            // Subscores j, k, m are now on 1-5 scale in sheet.
+            // We multiply by 2 to normalize to 1-10 scale for calculation.
             ['j', 'k', 'm'].forEach(key => {
-                const val = subs[key];
-                if (val && !isNaN(parseFloat(val))) {
-                    numerator += parseFloat(val);
+                const val = parseFloat(subs[key]);
+                if (!isNaN(val)) {
+                    numerator += (val * 2);
                     denominator += 1;
-                    subCount += 1;
                 }
             });
             return (numerator / denominator).toFixed(1);
@@ -125,15 +125,18 @@
             return (values.reduce((a, b) => a + b, 0) / values.length).toFixed(1);
         };
 
+        // NEW SCALE: 1-5
         const getComplexityLabel = (val) => {
             if (!val) return '-';
             const v = Math.round(parseFloat(val));
             const labels = {
-                1: "Sleepwalking", 2: "No Brainer", 3: "Casual", 4: "Light",
-                5: "Moderate", 6: "Thinky", 7: "Brain Burner", 8: "Complex",
-                9: "Heavy", 10: "Impossible"
+                1: "No brainer",
+                2: "Casual",
+                3: "Moderate",
+                4: "Complex",
+                5: "Heavy"
             };
-            return labels[Math.max(1, Math.min(10, v))] || "Moderate";
+            return labels[Math.max(1, Math.min(5, v))] || "Moderate";
         };
 
         const parsePrice = (priceStr) => {
@@ -387,7 +390,16 @@
         }
 
         function GameDetailModal({ game, onClose }) {
-            if (!game) return null;
+            // REMOVED: if (!game) return null; (Handled by parent now)
+            
+            // Add Effect to lock scrolling
+            useEffect(() => {
+                document.body.style.overflow = 'hidden';
+                return () => { document.body.style.overflow = ''; }
+            }, []);
+
+            if (!game) return null; // Safety check moved after hooks
+
             const isOwned = game.owned;
 
             const handleContentClick = (e) => {
@@ -500,7 +512,7 @@
                                                         {s.l}
                                                     </div>
                                                     <div className="flex items-baseline gap-2">
-                                                        <span className="text-xl md:text-2xl font-serif-italic text-[#F1F1F1]">{s.v || '-'}</span>
+                                                        <span className="text-xl md:text-2xl font-serif-italic text-[#F1F1F1]">{s.v || '-'} <span className="text-xs text-[#F1F1F1]/40 font-sans">/ 5</span></span>
                                                     </div>
                                                 </div>
                                             ))}
@@ -691,6 +703,24 @@
                 }
             }, [toastMessage]);
 
+            // Back Button Logic
+            useEffect(() => {
+                const onPopState = () => {
+                    setSelectedGame(null);
+                };
+                window.addEventListener('popstate', onPopState);
+                return () => window.removeEventListener('popstate', onPopState);
+            }, []);
+
+            const handleOpenGame = (game) => {
+                window.history.pushState({ modalOpen: true }, '', '');
+                setSelectedGame(game);
+            };
+
+            const handleCloseGame = () => {
+                window.history.back();
+            };
+
             const handleToggleSelect = (game) => {
                 if (!game.owned) return; // Guard clause just in case
 
@@ -864,7 +894,7 @@
                                         key={game.id} 
                                         game={game} 
                                         viewMode={viewMode} 
-                                        onOpenDetail={setSelectedGame} 
+                                        onOpenDetail={handleOpenGame} 
                                         isRequestMode={isRequestMode}
                                         isSelected={selectedRequestGames.some(g => g.id === game.id)}
                                         onToggleSelect={handleToggleSelect}
@@ -889,7 +919,9 @@
                         <RequestBar selectedGames={selectedRequestGames} />
                     )}
 
-                    <GameDetailModal game={selectedGame} onClose={() => setSelectedGame(null)} />
+                    {selectedGame && (
+                        <GameDetailModal game={selectedGame} onClose={handleCloseGame} />
+                    )}
                 </div>
             );
         }
