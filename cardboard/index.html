@@ -78,6 +78,21 @@
             padding: 2rem;
             perspective: 1000px; /* For 3D Tilt Effect */
             z-index: 10;
+            position: relative;
+        }
+
+        /* NEW: Separate Shadow Layer to prevent Z-fighting */
+        .card-shadow {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            width: calc(100% - 4rem); /* Match padding of container */
+            height: calc(100% - 4rem);
+            background-color: rgba(31, 31, 31, 0.4);
+            transform: translateZ(-20px); /* Push well behind */
+            filter: blur(15px);
+            z-index: 0;
+            /* Will be shaped by JS to match card */
         }
 
         /* The "Card" holding content */
@@ -85,10 +100,10 @@
             background-color: var(--paper-texture);
             position: relative;
             padding: 3rem 2rem;
-            /* Shadow to lift it off the page */
-            filter: drop-shadow(10px 10px 0px rgba(31, 31, 31, 0.2));
+            /* REMOVED: filter: drop-shadow which was causing the flickering */
             transform-style: preserve-3d;
             transition: transform 0.1s ease-out;
+            z-index: 1;
         }
 
         /* Paper texture noise overlay */
@@ -107,7 +122,8 @@
             text-align: center;
             margin-bottom: 2.5rem;
             position: relative;
-            z-index: 1;
+            z-index: 2;
+            transform: translateZ(10px); /* Slight lift */
         }
 
         .logo-wrapper {
@@ -131,27 +147,14 @@
             transform: rotate(2deg) scale(1.1);
         }
 
-        /* "Tape" holding the logo */
-        .tape {
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%) rotate(-2deg);
-            width: 60px;
-            height: 25px;
-            background-color: rgba(255, 255, 255, 0.4);
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-            backdrop-filter: blur(1px);
-            z-index: 2;
-        }
-
         /* Links Section */
         .links-wrapper {
             display: flex;
             flex-direction: column;
             gap: 1.25rem;
             position: relative;
-            z-index: 1;
+            z-index: 2;
+            transform-style: preserve-3d;
         }
 
         .link-btn {
@@ -169,13 +172,16 @@
             cursor: pointer;
             /* Clip path will be set by JS, fallback here */
             clip-path: polygon(2% 2%, 98% 0%, 100% 98%, 0% 100%);
+            /* FIX: Increased Z-distance to avoid clipping */
+            transform: translateZ(30px); 
+            /* REMOVED: backface-visibility: hidden (caused issues) */
         }
 
         .link-btn:hover {
-            transform: scale(1.02) rotate(-1deg);
+            /* Keep the Z translation on hover */
+            transform: translateZ(40px) scale(1.02) rotate(-1deg);
             color: #fff;
             box-shadow: 5px 5px 0px rgba(0,0,0,0.2); 
-            /* Note: box-shadow is cut off by clip-path, so we rely on transform/color mostly */
         }
 
         /* Hover Colors per brand */
@@ -204,11 +210,13 @@
 
     <!-- Main Container -->
     <div class="container" id="tilt-box">
+        <!-- New Shadow Layer -->
+        <div class="card-shadow" id="card-shadow"></div>
+        
         <div class="card-board" id="main-card">
             
             <header class="header">
                 <div class="logo-wrapper">
-                    <div class="tape"></div>
                     <!-- Fallback if image missing: display initials -->
                     <img src="logo.png" alt="CardBoard LK Logo" class="logo-img" onerror="this.onerror=null;this.parentElement.innerHTML='<div style=\'width:100%;height:100%;background:#1f1f1f;color:#e7c48b;display:flex;align-items:center;justify-content:center;font-size:2rem;transform:rotate(-3deg)\'>CB</div>'">
                 </div>
@@ -282,9 +290,14 @@
             btn.style.clipPath = generateTornEdge(3); // Higher variance for buttons
         });
 
-        // 2. Apply torn edges to the main card (subtler)
+        // 2. Apply torn edges to the main card AND the shadow (must match)
         const mainCard = document.getElementById('main-card');
-        mainCard.style.clipPath = generateTornEdge(1.5); // Lower variance for the main paper
+        const cardShadow = document.getElementById('card-shadow');
+        
+        // Use exact same shape for both
+        const cardShape = generateTornEdge(1.5);
+        mainCard.style.clipPath = cardShape;
+        cardShadow.style.clipPath = cardShape;
 
         // 3. 3D Tilt Effect
         const container = document.getElementById('tilt-box');
@@ -298,39 +311,61 @@
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
             
-            // Max rotation degrees (Reduced as requested)
+            // Max rotation degrees
             const maxRot = 2;
             
             const rotateX = ((y - centerY) / centerY) * -maxRot;
             const rotateY = ((x - centerX) / centerX) * maxRot;
 
-            mainCard.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            // Apply to card and keep shadow behind it
+            const transformString = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            
+            mainCard.style.transform = transformString;
+            // Shadow mimics movement but stays behind
+            cardShadow.style.transform = transformString + " translateZ(-20px)"; 
         });
 
         // Reset on mouse leave
         container.addEventListener('mouseleave', () => {
             mainCard.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
+            cardShadow.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(-20px)`;
         });
 
-        // Gyroscope Effect for Mobile
+        /* Smoother Mobile Tilt (Gyroscope) */
+        let targetX = 0;
+        let targetY = 0;
+        let currentX = 0;
+        let currentY = 0;
+
         window.addEventListener('deviceorientation', (event) => {
-            // Check if values exist (some devices return null if no sensor/permission)
             if (event.beta === null || event.gamma === null) return;
-
-            // Beta is front-to-back tilt (-180 to 180)
-            // Gamma is left-to-right tilt (-90 to 90)
-            
-            // We clamp values to keep rotation subtle
-            let tiltX = Math.max(-20, Math.min(20, event.gamma));
-            let tiltY = Math.max(-20, Math.min(20, event.beta));
-            
-            // Convert to small degrees for the CSS transform (max 3 degrees)
-            const maxMobileRot = 3;
-            const rY = (tiltX / 20) * maxMobileRot; 
-            const rX = (tiltY / 20) * -maxMobileRot; // Inverted for natural feel
-
-            mainCard.style.transform = `perspective(1000px) rotateX(${rX}deg) rotateY(${rY}deg)`;
+            // Clamp values
+            const tiltX = Math.max(-20, Math.min(20, event.gamma));
+            const tiltY = Math.max(-20, Math.min(20, event.beta));
+            targetX = tiltX;
+            targetY = tiltY;
         });
+
+        function updateTilt() {
+            // Smooth interpolation
+            currentX += (targetX - currentX) * 0.1;
+            currentY += (targetY - currentY) * 0.1;
+
+            const maxMobileRot = 5;
+            const rY = (currentX / 20) * maxMobileRot;
+            const rX = (currentY / 20) * -maxMobileRot;
+
+            // Apply if on touch device
+            if (window.matchMedia("(hover: none)").matches && (Math.abs(currentX) > 0.1 || Math.abs(currentY) > 0.1)) {
+                 const transformString = `perspective(1000px) rotateX(${rX}deg) rotateY(${rY}deg)`;
+                 mainCard.style.transform = transformString;
+                 cardShadow.style.transform = transformString + " translateZ(-20px)";
+            }
+
+            requestAnimationFrame(updateTilt);
+        }
+        
+        updateTilt();
 
         // 4. Generate random background scraps
         const body = document.querySelector('body');
@@ -339,28 +374,16 @@
         for(let i=0; i<6; i++) {
             let scrap = document.createElement('div');
             scrap.classList.add('scrap');
-            
-            // Random size
             let size = Math.floor(Math.random() * 60 + 40);
             scrap.style.width = size + 'px';
             scrap.style.height = size + 'px';
-            
-            // Random position
             scrap.style.top = Math.random() * 90 + 'vh';
             scrap.style.left = Math.random() * 90 + 'vw';
-            
-            // Random color
             scrap.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-            
-            // Random rotation
             scrap.style.transform = `rotate(${Math.random() * 360}deg)`;
-            
-            // Random shape
-            scrap.style.clipPath = generateTornEdge(15); // Very jagged
-            
+            scrap.style.clipPath = generateTornEdge(15);
             body.appendChild(scrap);
         }
-
     </script>
 </body>
 </html>
