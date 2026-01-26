@@ -295,7 +295,7 @@
             return (
                 <div 
                     onClick={handleClick}
-                    className={`group relative border rounded-3xl overflow-hidden transition-all duration-300 cursor-pointer flex flex-col h-full 
+                    className={`group relative border rounded-3xl overflow-hidden transition-all duration-300 cursor-pointer flex flex-col 
                         ${isRequestMode && isSelected ? 'bg-[#1F1F1F]' : ''}
                         ${!isRequestMode && isOwned ? 'bg-[#F1F1F1]/5 border-[#F1F1F1]/5 hover:border-[#C51728]/40 hover:shadow-2xl hover:shadow-[#C51728]/10' : 'bg-[#F1F1F1]/[0.02] border-[#F1F1F1]/5'}
                         ${!isOwned && !isRequestMode ? 'not-owned' : ''}
@@ -328,7 +328,8 @@
                         )}
                     </div>
 
-                    <div className="flex-1 flex flex-col justify-end relative z-10 -mt-20"> 
+                    {/* Content is now absolutely positioned at the bottom */}
+                    <div className="absolute bottom-0 left-0 right-0 z-10 flex flex-col justify-end"> 
                         <div className="px-5 md:px-6 pb-2 min-h-[50px] md:min-h-[60px] flex items-end justify-start">
                             <h3 className={`font-serif-italic text-3xl md:text-2xl leading-none mb-3 transition-colors drop-shadow-md line-clamp-2 ${isOwned ? 'text-[#F1F1F1] group-hover:text-[#C51728]' : 'text-[#F1F1F1]/50'}`} title={game.name}>
                                 {game.name}
