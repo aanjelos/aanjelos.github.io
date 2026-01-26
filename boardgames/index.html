@@ -354,7 +354,7 @@
                             </div>
 
                             {/* CHANGED: New Detail Row */}
-                            <div className="px-6 py-3 border-t border-[#F1F1F1]/5 flex items-center justify-between text-[10px] md:text-xs text-[#F1F1F1]/40">
+                            <div className="px-3 md:px-6 py-3 border-t border-[#F1F1F1]/5 flex items-center justify-between text-[10px] md:text-xs text-[#F1F1F1]/40">
                                 <div className="flex items-center gap-1.5">
                                     <Icons.Clock className="w-3 h-3" />
                                     <span>{game.playTime ? `${game.playTime}m` : '-'}</span>
@@ -893,9 +893,9 @@
             return (
                 <div className="min-h-screen bg-[#1F1F1F] text-[#F1F1F1] selection:bg-[#C51728]/30 selection:text-white pb-24 md:pb-0">
                     <nav className="border-b border-[#F1F1F1]/5 bg-[#1F1F1F]/95 backdrop-blur-xl sticky top-0 z-40 transition-all">
-                        <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 lg:py-0 lg:h-20 flex flex-col lg:flex-row items-center justify-between gap-4 lg:gap-0">
+                        <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4 lg:py-0 lg:h-20 flex flex-col lg:flex-row items-center justify-between gap-3 lg:gap-0">
                             <div className="flex items-center gap-4">
-                                <h1 className="text-2xl md:text-3xl font-serif-italic tracking-wide text-[#F1F1F1] text-center lg:text-left">Aanjelo's Board Games Library</h1>
+                                <h1 className="text-xl md:text-3xl font-serif-italic tracking-wide text-[#F1F1F1] text-center lg:text-left">Aanjelo's Board Games Library</h1>
                             </div>
                             <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full sm:w-auto justify-center">
                                 {/* Desktop Stats & Mobile Scrollable Container */}
