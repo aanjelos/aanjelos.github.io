@@ -304,40 +304,44 @@
                 >
                     {requestOverlay}
 
-                    <div className="relative w-full aspect-video sm:aspect-[4/3] bg-[#000]/30 overflow-hidden">
-                        {game.image ? (
-                            <img src={game.image} alt={game.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100" />
-                        ) : (
-                            <div className="absolute inset-0 flex items-center justify-center text-[#F1F1F1]/10">
-                                <Icons.Box className="w-12 h-12" />
-                            </div>
-                        )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-100" />
-                        
-                        {game.expansions?.length > 0 && (
-                            <div className="absolute top-3 right-3 flex flex-col gap-1 items-end">
-                                <div className="bg-[#1F1F1F]/80 backdrop-blur text-[#F1F1F1] text-[10px] px-2 py-1 rounded-full border border-[#F1F1F1]/10 flex items-center gap-1">
-                                    <Icons.Layers className="w-3 h-3" /> +{game.expansions.length}
+                    <div className="flex flex-col h-full relative">
+                        {/* 1. Image Container */}
+                        <div className="relative w-full aspect-[4/3] bg-[#000]/30 overflow-hidden">
+                            {game.image ? (
+                                <img src={game.image} alt={game.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100" />
+                            ) : (
+                                <div className="absolute inset-0 flex items-center justify-center text-[#F1F1F1]/10">
+                                    <Icons.Box className="w-12 h-12" />
                                 </div>
+                            )}
+                            {/* Gradient behind text */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-100" />
+                            
+                            {/* Title - Absolutely positioned at bottom of image */}
+                            <div className="absolute bottom-0 left-0 right-0 z-10 px-5 md:px-6 pb-2">
+                                <h3 className={`font-serif-italic text-3xl md:text-2xl leading-none mb-1 transition-colors drop-shadow-md line-clamp-2 ${isOwned ? 'text-[#F1F1F1] group-hover:text-white' : 'text-[#F1F1F1]/50'}`} title={game.name}>
+                                    {game.name}
+                                </h3>
                             </div>
-                        )}
-                        
-                        {!isOwned && !isRequestMode && (
-                            <div className="absolute top-3 left-3 bg-[#000]/60 backdrop-blur text-[#F1F1F1]/60 text-[10px] px-2 py-1 rounded-full border border-[#F1F1F1]/10 uppercase font-bold tracking-widest">
-                                Not Owned
-                            </div>
-                        )}
-                    </div>
 
-                    {/* Content is now absolutely positioned at the bottom */}
-                    <div className="absolute bottom-0 left-0 right-0 z-10 flex flex-col justify-end"> 
-                        <div className="px-5 md:px-6 pb-2 min-h-[50px] md:min-h-[60px] flex items-end justify-start">
-                            <h3 className={`font-serif-italic text-3xl md:text-2xl leading-none mb-3 transition-colors drop-shadow-md line-clamp-2 ${isOwned ? 'text-[#F1F1F1] group-hover:text-white' : 'text-[#F1F1F1]/50'}`} title={game.name}>
-                                {game.name}
-                            </h3>
+                            {/* Badges */}
+                            {game.expansions?.length > 0 && (
+                                <div className="absolute top-3 right-3 flex flex-col gap-1 items-end z-20">
+                                    <div className="bg-[#1F1F1F]/80 backdrop-blur text-[#F1F1F1] text-[10px] px-2 py-1 rounded-full border border-[#F1F1F1]/10 flex items-center gap-1">
+                                        <Icons.Layers className="w-3 h-3" /> +{game.expansions.length}
+                                    </div>
+                                </div>
+                            )}
+                            
+                            {!isOwned && !isRequestMode && (
+                                <div className="absolute top-3 left-3 bg-[#000]/60 backdrop-blur text-[#F1F1F1]/60 text-[10px] px-2 py-1 rounded-full border border-[#F1F1F1]/10 uppercase font-bold tracking-widest z-20">
+                                    Not Owned
+                                </div>
+                            )}
                         </div>
 
-                        <div className="bg-[#1F1F1F] border-t border-[#F1F1F1]/10 rounded-b-3xl flex flex-col">
+                        {/* 2. Stats Box - Static below image */}
+                        <div className="bg-[#1F1F1F] border-t border-[#F1F1F1]/10 rounded-b-3xl flex flex-col mt-auto z-20 relative">
                             {/* Score Row */}
                             <div className="p-2 md:p-4 pt-3 md:pt-4 grid grid-cols-3 gap-1 md:gap-2">
                                 <div className="text-center">
@@ -354,7 +358,7 @@
                                 </div>
                             </div>
 
-                            {/* CHANGED: New Detail Row */}
+                            {/* Detail Row */}
                             <div className="px-5 md:px-6 py-3 border-t border-[#F1F1F1]/5 flex items-center justify-between text-[10px] md:text-xs text-[#F1F1F1]/40">
                                 <div className="flex items-center gap-1.5">
                                     <Icons.Clock className="w-3 h-3" />
