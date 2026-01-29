@@ -12,10 +12,11 @@
     <meta name="description" content="A game about lying with conviction.">
     <meta property="og:title" content="Confidently Wrong">
     <meta property="og:description" content="A game about lying with conviction.">
-    <meta property="og:image" content="http://aanjelos.github.io/confidentlywrong/CWMetaImg.jpg">
+    <!-- Updated Meta Image (Forced HTTPS for GitHub Pages compatibility) -->
+    <meta property="og:image" content="https://aanjelos.github.io/confidentlywrong/CWMetaImg.jpg">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="fav.ico">
+    <link rel="icon" type="image/x-icon" href="fav.ico">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-W8J0P53GTM"></script>
@@ -26,7 +27,9 @@
       gtag('config', 'G-W8J0P53GTM');
     </script>
     
-    <!-- Fonts: Instrument Serif & Satoshi (via Fontshare CDN) -->
+    <!-- Fonts: Fontshare (With Preconnect for Mobile Performance) -->
+    <link rel="preconnect" href="https://api.fontshare.com">
+    <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
     <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&f[]=instrument-serif@400,400i&display=swap" rel="stylesheet">
     
     <!-- Icons: Phosphor Icons (CDN) -->
@@ -171,7 +174,8 @@
     </div>
 
     <!-- 4. MAIN APP CONTAINER -->
-    <div id="app-container" class="relative w-full h-dvh max-w-md mx-auto bg-[#1F1F1F] flex flex-col overflow-hidden transition-all duration-300">
+    <!-- UPDATED: Added md:max-w-md to ensure full width on mobile but constrained on desktop -->
+    <div id="app-container" class="relative w-full h-dvh md:max-w-md mx-auto bg-[#1F1F1F] flex flex-col overflow-hidden transition-all duration-300">
         
         <!-- LOADING SCREEN -->
         <div id="view-loading" class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#1F1F1F]">
@@ -361,10 +365,13 @@
                             <span class="text-xs text-gray-400">JSON Format</span>
                         </div>
                         <div class="grid grid-cols-2 gap-4">
+                            <!-- UPDATED: Reverted Icons -->
+                            <!-- Export = Upload Icon (Up) -->
                             <button onclick="exportHistory()" class="bg-[#2A2A2A] text-teal-400 border border-teal-900/50 py-4 rounded-xl font-bold text-sm btn-press flex flex-col items-center justify-center gap-2">
                                 <i class="ph ph-upload-simple text-2xl"></i>
                                 <span>Export File</span>
                             </button>
+                            <!-- Import = Download Icon (Down) -->
                             <button onclick="document.getElementById('import-input').click()" class="bg-[#2A2A2A] text-white border border-gray-700 py-4 rounded-xl font-bold text-sm btn-press flex flex-col items-center justify-center gap-2">
                                 <i class="ph ph-download-simple text-2xl"></i>
                                 <span>Import File</span>
@@ -746,10 +753,6 @@
             els.answerText.innerText = currentQ.answer;
             els.idBadge.innerText = `#${currentQ.id}`;
             els.catBadge.innerText = currentQ.category.toUpperCase();
-        }
-
-        function toggleAnswer() {
-            els.answerCard.classList.toggle('slide-up-active');
         }
 
         // --- HISTORY & SETTINGS ---
