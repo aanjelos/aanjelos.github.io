@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#1F1F1F">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Meta Data -->
+    <title>Confidently Wrong</title>
+    <meta name="description" content="A game about lying with conviction.">
+    <meta property="og:title" content="Confidently Wrong">
+    <meta property="og:description" content="A game about lying with conviction.">
+    <meta property="og:image" content="http://aanjelos.github.io/confidentlywrong/CWMetaImg.jpg">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="fav.ico">
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-W8J0P53GTM"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-W8J0P53GTM');
+    </script>
+    
+    <!-- Fonts: Instrument Serif & Satoshi (via Fontshare CDN) -->
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&f[]=instrument-serif@400,400i&display=swap" rel="stylesheet">
+    
+    <!-- Icons: Phosphor Icons (CDN) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Tailwind CSS (CDN for utility classes) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* --- CORE VARIABLES & RESET --- */
+        :root {
+            --bg-color: #1F1F1F;
+            --text-color: #F1F1F1;
+            --accent-teal: #23967F;
+            --accent-red: #C51728;
+            --card-surface: #2A2A2A;
+            --font-head: 'Instrument Serif', serif;
+            --font-body: 'Satoshi', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-body);
+            overflow: hidden; /* Prevent scrolling globally */
+            touch-action: manipulation; /* Improves touch response */
+            -webkit-tap-highlight-color: transparent;
+            user-select: none; /* Prevent text selection */
+            -webkit-user-select: none;
+        }
+
+        h1, h2, h3, .serif {
+            font-family: var(--font-head);
+        }
+
+        /* --- UTILITIES --- */
+        /* Dynamic Viewport Height for Mobile Browsers */
+        .h-dvh {
+            height: 100vh; /* Fallback */
+            height: 100dvh;
+        }
+
+        /* Hide Scrollbar but allow scroll */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* --- ANIMATIONS --- */
+        .slide-up-enter {
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .slide-up-active {
+            transform: translateY(0);
+        }
+        
+        /* Fade In/Out */
+        .fade-enter { opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
+        .fade-active { opacity: 1; pointer-events: auto; }
+
+        /* Loading Spinner */
+        .loader {
+            border: 3px solid #333;
+            border-top: 3px solid var(--text-color);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- LAYOUT LOCKS --- */
+        #desktop-blocker, #landscape-warning {
+            display: none;
+            z-index: 9999;
+        }
+
+        /* Desktop Blocker Logic */
+        @media (min-width: 768px) {
+            #desktop-blocker { display: flex; }
+        }
+
+        /* Landscape Warning Logic (Soft Lock) */
+        @media screen and (orientation: landscape) and (max-width: 1024px) {
+            #landscape-warning { display: flex; }
+            #desktop-blocker { display: none; } /* Prioritize landscape warning on mobile */
+        }
+        
+        /* Interactive Card State */
+        .answer-card {
+            background-color: var(--accent-teal);
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+            will-change: transform;
+        }
+
+        .btn-press:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+
+        /* Back Button Touch Area */
+        .touch-target {
+            padding: 12px;
+            margin: -12px;
+        }
+    </style>
+</head>
+<body class="antialiased select-none">
+
+    <!-- ================= SCREENS & VIEWS ================= -->
+
+    <!-- 1. DESKTOP BLOCKER -->
+    <div id="desktop-blocker" class="fixed inset-0 bg-neutral-900 flex flex-col items-center justify-center text-center p-8">
+        <h1 class="text-4xl mb-4 text-gray-400">Please use your phone.</h1>
+        <p class="text-gray-500 mb-8 max-w-md">Confidently Wrong is designed to be played physically with friends using a mobile device.</p>
+        <button onclick="forceMobileMode()" class="text-sm text-gray-400 underline hover:text-gray-300 transition-colors cursor-pointer p-2">
+            I'll do it anyway (Test Mode)
+        </button>
+    </div>
+
+    <!-- 2. LANDSCAPE WARNING -->
+    <div id="landscape-warning" class="fixed inset-0 bg-black flex flex-col items-center justify-center text-center p-6">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-4 text-gray-500 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+        </svg>
+        <p class="text-gray-400 font-medium">Please rotate your device to portrait.</p>
+    </div>
+
+    <!-- 3. CUSTOM MODAL (Replaces Alert/Confirm) -->
+    <div id="app-modal" class="fixed inset-0 z-[100] bg-black/80 flex items-center justify-center p-6 fade-enter">
+        <div class="bg-[#2A2A2A] rounded-2xl p-6 w-full max-w-sm border border-gray-700 shadow-2xl transform transition-all">
+            <h3 id="modal-title" class="text-xl font-bold mb-2">Notice</h3>
+            <p id="modal-body" class="text-gray-300 text-sm mb-6 leading-relaxed">Message goes here</p>
+            <div id="modal-actions" class="flex gap-3">
+                <!-- Buttons injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. MAIN APP CONTAINER -->
+    <div id="app-container" class="relative w-full h-dvh max-w-md mx-auto bg-[#1F1F1F] flex flex-col overflow-hidden transition-all duration-300">
+        
+        <!-- LOADING SCREEN -->
+        <div id="view-loading" class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#1F1F1F]">
+            <div class="loader mb-4"></div>
+            <p class="text-sm text-gray-400 tracking-widest uppercase">Loading Questions</p>
+        </div>
+
+        <!-- HOME MENU -->
+        <div id="view-home" class="view-section absolute inset-0 flex flex-col p-6 hidden">
+            <div class="flex-1 flex flex-col justify-center items-center text-center">
+                <!-- "Unofficial Fan Game" Removed -->
+                <h1 class="text-6xl leading-none mb-3">Confidently<br><i class="text-gray-500">Wrong</i></h1>
+                <p class="text-gray-400 text-sm mt-2 max-w-[200px]">A game about lying with conviction.</p>
+            </div>
+
+            <div class="space-y-3 mb-8 w-full">
+                <button onclick="showCategories()" class="w-full bg-[#F1F1F1] text-black py-4 rounded-xl font-bold text-lg btn-press shadow-lg">Play Game</button>
+                <button onclick="showHowToPlay()" class="w-full bg-[#2A2A2A] text-white py-4 rounded-xl font-medium btn-press border border-gray-800">How To Play</button>
+                <div class="flex gap-3">
+                    <button onclick="showHistory()" class="flex-1 bg-[#2A2A2A] text-white py-4 rounded-xl font-medium btn-press border border-gray-800">History</button>
+                    <button onclick="showSettings()" class="flex-1 bg-[#2A2A2A] text-white py-4 rounded-xl font-medium btn-press border border-gray-800">Settings</button>
+                </div>
+            </div>
+            
+            <div class="text-center text-[10px] text-gray-500 pb-4 leading-relaxed">
+                <div>Inspired by <strong>Sounds Fishy</strong>.<br>No affiliation with Big Potato Games.</div>
+                <div class="w-16 h-px bg-gray-800 mx-auto my-3"></div>
+                <div class="text-gray-400 font-medium">Project by <a href="https://instagram.com/cardboard.lk" target="_blank" class="text-teal-400 hover:text-teal-300">@CardBoard.LK</a><br>of Aanjelo Salgado</div>
+            </div>
+        </div>
+
+        <!-- HOW TO PLAY SCREEN -->
+        <div id="view-howtoplay" class="view-section absolute inset-0 flex flex-col bg-[#1F1F1F] hidden">
+            <div class="p-6 pb-2 bg-[#1F1F1F] z-10 border-b border-gray-800">
+                <button onclick="goBack()" class="touch-target text-gray-400 text-sm mb-4 flex items-center gap-1">
+                    <i class="ph ph-caret-left text-lg"></i>
+                    Back
+                </button>
+                <h2 class="text-3xl">How to Play</h2>
+            </div>
+            <div class="flex-1 overflow-y-auto p-6 pt-4 space-y-8 no-scrollbar pb-12">
+                <section>
+                    <h3 class="text-xl text-teal-400 mb-2">The Setup</h3>
+                    <p class="text-gray-300 text-sm leading-relaxed">Best for 4-10 players. You need this app and a deck of cards.</p>
+                    <ul class="mt-2 text-sm text-gray-400 space-y-2 list-disc pl-4">
+                        <li><strong>Joker:</strong> The Truth Teller <span class="text-xs text-teal-600">(Blue Kipper)</span>.</li>
+                        <li><strong>Face Cards (J,Q,K):</strong> The Liars <span class="text-xs text-red-700">(Red Herrings)</span>.</li>
+                        <li><strong>Point Bank:</strong> A-10 and any remaining Face Cards.</li>
+                    </ul>
+                </section>
+                
+                <section>
+                    <h3 class="text-xl text-white mb-2">The Turn</h3>
+                    <ol class="mt-2 text-sm text-gray-300 space-y-3 list-decimal pl-4">
+                        <li><strong>Role Call:</strong> Players (except the Guesser) secretly look at their card to find their role.</li>
+                        <li><strong>The Question:</strong> The Guesser holds the phone and reads the question aloud. <em>(Feel free to skip questions if they seem uninteresting or the answer is obvious!)</em></li>
+                        <li><strong>The Reveal:</strong> The Guesser turns the screen to face the other players. One player swipes up to reveal the answer.</li>
+                        <li><strong>The Hold:</strong> The Guesser keeps the phone facing the players (or places it face down) so they can see the answer throughout the round.</li>
+                        <li><strong>The Bluff:</strong> The Guesser asks each player for the answer. The <strong>Truth Teller</strong> must tell the truth. The <strong>Liars</strong> must give a convincing lie that sounds like the truth.</li>
+                    </ol>
+                </section>
+
+                <section>
+                    <h3 class="text-xl text-yellow-400 mb-2">Scoring</h3>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-2">Each <strong>face down</strong> card from the bank is worth 1 point.</p>
+                    <ul class="text-sm text-gray-400 space-y-2 list-disc pl-4">
+                        <li><strong>Catching a Liar:</strong> If the Guesser picks a Liar, the Guesser gets 1 point (takes a card).</li>
+                        <li><strong>The Trap:</strong> If the Guesser picks the Truth Teller, the Guesser loses their turn points. The Truth Teller gets 2 points.</li>
+                        <li><strong>Big Points:</strong> You can flip a point card face up to represent 5 points (discarding 4 other cards back to the bank).</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3 class="text-xl text-red-400 mb-2">Game Over</h3>
+                    <p class="text-gray-300 text-sm leading-relaxed">Play until everyone has been the Guesser twice, or if the point bank runs out of cards. Then count the points and the person with the highest points is the winner.</p>
+                </section>
+            </div>
+        </div>
+
+        <!-- CATEGORY SELECTOR -->
+        <div id="view-categories" class="view-section absolute inset-0 flex flex-col bg-[#1F1F1F] hidden">
+            <div class="p-6 pb-2 bg-[#1F1F1F] z-10">
+                <button onclick="goBack()" class="touch-target text-gray-400 text-sm mb-4 flex items-center gap-1">
+                    <i class="ph ph-caret-left text-lg"></i>
+                    Back
+                </button>
+                <h2 class="text-3xl">Select Topic</h2>
+            </div>
+            <div id="category-list" class="flex-1 overflow-y-auto p-6 pt-2 space-y-3 no-scrollbar pb-12">
+                <!-- Categories injected here -->
+            </div>
+        </div>
+
+        <!-- GAMEPLAY SCREEN -->
+        <div id="view-game" class="view-section absolute inset-0 flex flex-col hidden">
+            
+            <!-- TOP HALF: QUESTION -->
+            <div class="flex-1 relative flex flex-col p-6 pt-16 overflow-y-auto no-scrollbar">
+                <div class="flex justify-between items-start mb-4">
+                    <span id="game-cat-badge" class="px-2 py-1 bg-gray-800 rounded text-[10px] tracking-widest uppercase text-gray-400 font-bold">MOVIES</span>
+                    <span id="game-id-badge" class="text-lg text-gray-500 font-mono font-bold opacity-80">#104</span>
+                </div>
+
+                <div class="flex-1 flex items-center justify-center min-h-[200px]">
+                    <h3 id="game-question" class="text-3xl md:text-4xl text-center leading-tight">
+                        <!-- Question Text -->
+                    </h3>
+                </div>
+
+                <!-- Interaction Hint -->
+                <div class="mt-auto pt-6 mb-2 flex justify-center opacity-30">
+                     <i class="ph ph-caret-double-up text-3xl animate-bounce"></i>
+                </div>
+            </div>
+
+            <!-- BOTTOM HALF: CONTROLS & ANSWER OVERLAY -->
+            <div class="relative h-1/2 w-full flex flex-col z-20">
+                
+                <!-- ANSWER CARD (Absolute Overlay) -->
+                <div id="answer-card" class="absolute inset-0 top-4 mx-4 rounded-t-3xl answer-card z-30 slide-up-enter flex flex-col items-center justify-center text-center p-6 shadow-2xl">
+                    <div class="w-full h-full overflow-y-auto no-scrollbar flex flex-col items-center justify-center">
+                        <p class="text-xs uppercase tracking-widest text-teal-900/60 font-bold mb-4">The Truth</p>
+                        <h2 id="game-answer" class="text-3xl md:text-5xl text-white font-serif leading-tight">
+                            <!-- Answer Text -->
+                        </h2>
+                        <p class="mt-8 text-[10px] text-white/40 uppercase tracking-widest">Swipe down to hide</p>
+                    </div>
+                </div>
+
+                <!-- TAP AREA (Invisible trigger when card is down) -->
+                <div id="reveal-trigger" class="absolute inset-0 z-10 pointer-events-none">
+                    <div class="w-full h-full flex items-center justify-center bg-gradient-to-t from-black/40 to-transparent">
+                        <p class="text-sm text-gray-500 uppercase tracking-widest font-bold">Swipe Up to Reveal</p>
+                    </div>
+                </div>
+
+                <!-- CONTROLS (At the very bottom) -->
+                <div id="game-controls" class="mt-auto bg-[#151515] p-4 pb-8 z-40 border-t border-gray-800" onclick="event.stopPropagation()">
+                    <button onclick="nextQuestion()" class="w-full bg-white text-black py-4 rounded-lg font-bold text-xl mb-3 btn-press shadow-lg">
+                        Next Question
+                    </button>
+                    <div class="flex gap-3">
+                        <button onclick="prevQuestion()" class="flex-1 bg-gray-800 text-gray-300 py-3 rounded-lg text-sm font-medium btn-press">
+                            Undo
+                        </button>
+                        <button onclick="skipQuestion()" class="flex-1 bg-gray-800 text-gray-300 py-3 rounded-lg text-sm font-medium btn-press">
+                            Skip
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quit Button (Top Left Overlay) -->
+            <button onclick="confirmQuit(event)" class="touch-target absolute top-3 left-3 p-3 text-gray-500 hover:text-white z-50 bg-[#1F1F1F]/50 rounded-full backdrop-blur-sm flex items-center justify-center">
+                <i class="ph ph-x text-xl"></i>
+            </button>
+        </div>
+
+        <!-- HISTORY SCREEN -->
+        <div id="view-history" class="view-section absolute inset-0 flex flex-col bg-[#1F1F1F] hidden">
+            <div class="p-6 border-b border-gray-800 bg-[#1F1F1F] z-10">
+                <button onclick="goBack()" class="touch-target text-gray-400 text-sm mb-4 flex items-center gap-1">
+                    <i class="ph ph-caret-left text-lg"></i>
+                    Back
+                </button>
+                <h2 class="text-3xl">History</h2>
+                <p class="text-xs text-gray-500 mt-1">Questions played on this device.</p>
+            </div>
+            <div id="history-list" class="flex-1 overflow-y-auto p-4 space-y-2 no-scrollbar">
+                <!-- History Items injected here -->
+            </div>
+        </div>
+
+        <!-- SETTINGS SCREEN -->
+        <div id="view-settings" class="view-section absolute inset-0 flex flex-col bg-[#1F1F1F] hidden">
+            <div class="p-6">
+                <button onclick="goBack()" class="touch-target text-gray-400 text-sm mb-4 flex items-center gap-1">
+                    <i class="ph ph-caret-left text-lg"></i>
+                    Back
+                </button>
+                <h2 class="text-3xl mb-8">Settings</h2>
+
+                <div class="space-y-8">
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-end border-b border-gray-800 pb-2">
+                            <h3 class="text-xl text-white">Save Data</h3>
+                            <span class="text-xs text-gray-400">JSON Format</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <button onclick="exportHistory()" class="bg-[#2A2A2A] text-teal-400 border border-teal-900/50 py-4 rounded-xl font-bold text-sm btn-press flex flex-col items-center justify-center gap-2">
+                                <i class="ph ph-upload-simple text-2xl"></i>
+                                <span>Export File</span>
+                            </button>
+                            <button onclick="document.getElementById('import-input').click()" class="bg-[#2A2A2A] text-white border border-gray-700 py-4 rounded-xl font-bold text-sm btn-press flex flex-col items-center justify-center gap-2">
+                                <i class="ph ph-download-simple text-2xl"></i>
+                                <span>Import File</span>
+                            </button>
+                        </div>
+                        <input type="file" id="import-input" class="hidden" accept=".json" onchange="importHistory(this)">
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-end border-b border-gray-800 pb-2">
+                            <h3 class="text-xl text-red-500">Danger Zone</h3>
+                        </div>
+                        <button onclick="requestClearHistory()" class="w-full bg-red-900/10 border border-red-900/50 text-red-500 py-4 rounded-xl text-sm font-bold btn-press flex items-center justify-center gap-2">
+                            <i class="ph ph-trash text-xl"></i>
+                            Delete All History
+                        </button>
+                    </div>
+                    
+                    <div class="text-center pt-8">
+                         <button onclick="forceRefreshData()" class="px-4 py-2 bg-gray-800 rounded-lg text-xs text-white font-medium hover:bg-gray-700">Force Refresh Game Data</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CATEGORY COMPLETE OVERLAY -->
+        <div id="view-complete" class="view-section absolute inset-0 flex flex-col items-center justify-center bg-[#1F1F1F] hidden z-50 p-6 text-center">
+            <div class="mb-6 bg-teal-900/20 p-6 rounded-full">
+                <i class="ph ph-check-circle text-6xl text-teal-400"></i>
+            </div>
+            <h2 class="text-4xl mb-2 text-white">All Done!</h2>
+            <p class="text-gray-400 mb-8 max-w-xs">You've played every question in this category. Reset history in settings to play again.</p>
+            <button onclick="navigate('home')" class="w-full bg-white text-black py-4 rounded-xl font-bold text-lg btn-press">Back to Menu</button>
+        </div>
+
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        // --- CONFIGURATION ---
+        // Using the TSV link provided
+        const DATA_SOURCE_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR4-yETw9NlpY7UzT4tYvJyCcpw2EIM85WsaK10Outi0H9yvanSCS1o3XqPp2MNNQneVmYZk29LSJab/pub?gid=169520701&single=true&output=tsv";
+        
+        // --- STATE ---
+        let allQuestions = [];
+        let playedHistory = []; // Array of IDs
+        let sessionHistory = []; // IDs played in this specific session (for Undo)
+        let currentCategory = 'All';
+        let currentQ = null;
+        let historyAPIAvailable = true; // Flag for sandbox support
+
+        // Swipe Variables
+        let touchStartY = 0;
+        let touchEndY = 0;
+
+        // --- DOM ELEMENTS ---
+        const els = {
+            screens: document.querySelectorAll('.view-section'),
+            loader: document.getElementById('view-loading'),
+            catList: document.getElementById('category-list'),
+            questionText: document.getElementById('game-question'),
+            answerText: document.getElementById('game-answer'),
+            answerCard: document.getElementById('answer-card'),
+            idBadge: document.getElementById('game-id-badge'),
+            catBadge: document.getElementById('game-cat-badge'),
+            historyList: document.getElementById('history-list'),
+            appContainer: document.getElementById('app-container'),
+            modal: document.getElementById('app-modal'),
+            modalTitle: document.getElementById('modal-title'),
+            modalBody: document.getElementById('modal-body'),
+            modalActions: document.getElementById('modal-actions')
+        };
+
+        // --- INITIALIZATION ---
+        window.addEventListener('DOMContentLoaded', async () => {
+            loadLocalStorage();
+            await fetchQuestions();
+            setupSwipeListeners();
+            
+            // Handle browser back button with safety check
+            try {
+                window.history.replaceState({view: 'home'}, '');
+            } catch (e) {
+                console.warn("History API restricted.");
+                historyAPIAvailable = false;
+            }
+
+            if (historyAPIAvailable) {
+                window.addEventListener('popstate', (event) => {
+                    if (event.state && event.state.view) {
+                        _showView(event.state.view);
+                    } else {
+                        _showView('home');
+                    }
+                });
+            }
+
+            _showView('home');
+        });
+
+        // --- GESTURE HANDLING ---
+        function setupSwipeListeners() {
+            const gameView = document.getElementById('view-game');
+            
+            // Touch
+            gameView.addEventListener('touchstart', e => {
+                touchStartY = e.changedTouches[0].screenY;
+            }, {passive: true});
+
+            gameView.addEventListener('touchend', e => {
+                touchEndY = e.changedTouches[0].screenY;
+                handleSwipeGesture();
+            }, {passive: true});
+
+            // Mouse
+            gameView.addEventListener('mousedown', e => {
+                touchStartY = e.clientY;
+            });
+
+            gameView.addEventListener('mouseup', e => {
+                touchEndY = e.clientY;
+                handleSwipeGesture();
+            });
+        }
+
+        function handleSwipeGesture() {
+            const threshold = 50; // minimum distance to trigger swipe
+            const distance = touchEndY - touchStartY;
+            
+            // Swipe UP (negative distance) -> Reveal Answer
+            if (distance < -threshold) {
+                // Only if card is NOT up
+                if (!els.answerCard.classList.contains('slide-up-active')) {
+                     els.answerCard.classList.add('slide-up-active');
+                }
+            }
+            
+            // Swipe DOWN (positive distance) -> Hide Answer
+            if (distance > threshold) {
+                // Only if card IS up
+                if (els.answerCard.classList.contains('slide-up-active')) {
+                     els.answerCard.classList.remove('slide-up-active');
+                }
+            }
+        }
+
+        // --- DATA HANDLING ---
+        async function fetchQuestions() {
+            try {
+                // Add timestamp to prevent caching
+                const response = await fetch(`${DATA_SOURCE_URL}&t=${Date.now()}`);
+                const text = await response.text();
+                parseTSV(text);
+            } catch (error) {
+                showModal("Error", "Failed to load questions. Check internet connection.", [
+                    {text: "Retry", action: () => window.location.reload()}
+                ]);
+                console.error(error);
+            } finally {
+                els.loader.classList.add('hidden');
+            }
+        }
+
+        function parseTSV(tsvText) {
+            const lines = tsvText.split('\n');
+            allQuestions = lines.slice(1).map(line => {
+                const cols = line.split('\t');
+                if (cols.length < 4) return null;
+                return {
+                    id: cols[0].trim(),
+                    category: cols[1].trim(),
+                    question: cols[2].trim(),
+                    answer: cols[3].trim()
+                };
+            }).filter(q => q !== null && q.question);
+            console.log(`Loaded ${allQuestions.length} questions.`);
+        }
+
+        // --- NAVIGATION SYSTEM ---
+        
+        // Public navigation function that updates History API
+        function navigate(viewName) {
+            if (historyAPIAvailable) {
+                try {
+                    window.history.pushState({view: viewName}, '', `#${viewName}`);
+                } catch (e) {
+                    console.warn("History API push blocked.");
+                    historyAPIAvailable = false;
+                }
+            }
+            _showView(viewName);
+        }
+
+        // Internal function to actually switch DOM elements
+        function _showView(viewName) {
+            // Hide all
+            els.screens.forEach(s => s.classList.add('hidden'));
+            
+            // Show target
+            const target = document.getElementById(`view-${viewName}`);
+            if (target) target.classList.remove('hidden');
+            
+            // Special view cleanups
+            if (viewName === 'game') {
+                els.answerCard.classList.remove('slide-up-active');
+            }
+        }
+
+        function goBack() {
+            if (historyAPIAvailable) {
+                try {
+                    window.history.back();
+                } catch(e) {
+                     _showView('home');
+                }
+            } else {
+                _showView('home');
+            }
+        }
+
+        function forceMobileMode() {
+            document.getElementById('desktop-blocker').style.display = 'none';
+            els.appContainer.classList.add('border-x', 'border-gray-800', 'shadow-2xl');
+        }
+
+        function confirmQuit(e) {
+            if(e) e.stopPropagation();
+            showModal("Quit Game?", "Your progress is saved automatically.", [
+                {text: "Cancel", action: null, primary: false},
+                {text: "Quit", action: () => navigate('home'), primary: true}
+            ]);
+        }
+
+        function showCategories() {
+            const categories = new Set(allQuestions.map(q => q.category));
+            
+            let html = `
+                <button onclick="startGame('All')" class="w-full text-left bg-[#2A2A2A] p-5 rounded-xl border border-gray-800 flex justify-between items-center btn-press">
+                    <span class="font-bold text-lg text-white">All Questions (No NSFW)</span>
+                    <span class="text-xs bg-gray-700 px-2 py-1 rounded text-gray-300">Safe Mix</span>
+                </button>
+            `;
+
+            if (categories.has('Facts')) {
+                categories.delete('Facts');
+                html += `
+                    <button onclick="startGame('Facts')" class="w-full text-left bg-[#2A2A2A] p-5 rounded-xl border border-teal-900/50 flex justify-between items-center btn-press mt-3">
+                        <span class="font-bold text-lg text-teal-400">Random Facts</span>
+                        <span class="text-xs bg-teal-900 px-2 py-1 rounded text-teal-200">Featured</span>
+                    </button>
+                `;
+            }
+
+            const sortedCats = Array.from(categories).sort();
+            
+            sortedCats.forEach(cat => {
+                if (cat === 'NSFW') return; 
+                
+                html += `
+                    <button onclick="startGame('${cat}')" class="w-full text-left bg-[#2A2A2A] p-5 rounded-xl border border-gray-800 text-gray-300 flex justify-between items-center btn-press mt-3">
+                        <span class="font-bold text-lg">${cat}</span>
+                    </button>
+                `;
+            });
+            
+            if (allQuestions.some(q => q.category === 'NSFW')) {
+                 html += `
+                    <button onclick="startGame('NSFW')" class="w-full text-left bg-[#2A2A2A] p-5 rounded-xl border border-red-900/30 flex justify-between items-center btn-press mt-6 opacity-60 hover:opacity-100">
+                        <span class="font-bold text-lg text-red-700">NSFW</span>
+                        <span class="text-xs bg-red-900/20 px-2 py-1 rounded text-red-800">18+</span>
+                    </button>
+                `;
+            }
+
+            els.catList.innerHTML = html;
+            navigate('categories');
+        }
+
+        function startGame(category) {
+            currentCategory = category;
+            sessionHistory = [];
+            if (nextQuestion(true)) { // true = initial load
+                navigate('game');
+            }
+        }
+
+        function getAvailableQuestions() {
+            return allQuestions.filter(q => {
+                if (playedHistory.includes(q.id)) return false;
+                if (currentCategory === 'All') return q.category !== 'NSFW';
+                return q.category === currentCategory;
+            });
+        }
+
+        async function nextQuestion(isStart = false) {
+            // Logic:
+            // 1. If currently showing an answer (card is up), we must hide it first.
+            // 2. We wait for the 'down' animation to finish.
+            // 3. ONLY THEN do we swap the text for the new question.
+            
+            // Check if card is currently up
+            const isCardUp = els.answerCard.classList.contains('slide-up-active');
+            
+            if (isCardUp) {
+                // Hide it
+                els.answerCard.classList.remove('slide-up-active');
+                // Wait for the CSS transition (0.4s)
+                await new Promise(r => setTimeout(r, 400));
+            }
+
+            // Save current question to history if exists
+            if (currentQ && !isStart) {
+                if (!playedHistory.includes(currentQ.id)) {
+                    playedHistory.push(currentQ.id);
+                    saveLocalStorage();
+                }
+                sessionHistory.push(currentQ);
+            }
+
+            const pool = getAvailableQuestions();
+
+            if (pool.length === 0) {
+                setTimeout(() => {
+                    els.screens.forEach(s => s.classList.add('hidden'));
+                    document.getElementById('view-complete').classList.remove('hidden');
+                    if (historyAPIAvailable) {
+                         try { window.history.pushState({view: 'complete'}, '', '#complete'); } catch(e){}
+                    }
+                }, 100);
+                return false;
+            }
+
+            const randomIndex = Math.floor(Math.random() * pool.length);
+            currentQ = pool[randomIndex];
+            
+            // Now update the UI with new text
+            renderQuestion();
+            return true;
+        }
+
+        function skipQuestion() {
+            const pool = getAvailableQuestions().filter(q => q.id !== currentQ?.id);
+            if (pool.length === 0) {
+                 showModal("Notice", "No other questions available to skip to.");
+                 return;
+            }
+            
+            // Just update immediately (reset card pos)
+            els.answerCard.classList.remove('slide-up-active');
+            
+            const randomIndex = Math.floor(Math.random() * pool.length);
+            currentQ = pool[randomIndex];
+            renderQuestion();
+        }
+
+        function prevQuestion() {
+            if (sessionHistory.length === 0) {
+                showModal("Notice", "No previous question in this session.");
+                return;
+            }
+            
+            els.answerCard.classList.remove('slide-up-active');
+            
+            const prev = sessionHistory.pop();
+            const index = playedHistory.indexOf(prev.id);
+            if (index > -1) {
+                playedHistory.splice(index, 1);
+                saveLocalStorage();
+            }
+            currentQ = prev;
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            // Note: card class removal is handled in nextQuestion now for animation timing,
+            // but we keep it here to ensure safety.
+            els.answerCard.classList.remove('slide-up-active');
+            els.questionText.innerText = currentQ.question;
+            els.answerText.innerText = currentQ.answer;
+            els.idBadge.innerText = `#${currentQ.id}`;
+            els.catBadge.innerText = currentQ.category.toUpperCase();
+        }
+
+        function toggleAnswer() {
+            els.answerCard.classList.toggle('slide-up-active');
+        }
+
+        // --- HISTORY & SETTINGS ---
+
+        function loadLocalStorage() {
+            const stored = localStorage.getItem('cw_history');
+            if (stored) {
+                playedHistory = JSON.parse(stored);
+            }
+        }
+
+        function saveLocalStorage() {
+            localStorage.setItem('cw_history', JSON.stringify(playedHistory));
+        }
+
+        function showHistory() {
+            const historyObjs = playedHistory.map(id => allQuestions.find(q => q.id === id)).filter(x => x);
+            
+            if (historyObjs.length === 0) {
+                els.historyList.innerHTML = `<div class="text-center text-gray-500 mt-10">No questions played yet.</div>`;
+            } else {
+                els.historyList.innerHTML = historyObjs.slice().reverse().map(q => `
+                    <div class="bg-[#2A2A2A] p-4 rounded-lg border border-gray-800">
+                        <div class="flex justify-between mb-1">
+                            <span class="text-[10px] uppercase text-gray-400 tracking-wider">${q.category}</span>
+                            <span class="text-[10px] text-gray-500">#${q.id}</span>
+                        </div>
+                        <div class="font-medium text-white mb-2">${q.question}</div>
+                        <div class="text-sm text-teal-400 font-bold">${q.answer}</div>
+                    </div>
+                `).join('');
+            }
+            navigate('history');
+        }
+
+        function showSettings() { navigate('settings'); }
+        function showHowToPlay() { navigate('howtoplay'); }
+
+        function requestClearHistory() {
+            showModal("Delete All History?", "This cannot be undone.", [
+                {text: "Cancel", action: null, primary: false},
+                {text: "Delete Forever", action: () => {
+                    playedHistory = [];
+                    saveLocalStorage();
+                    navigate('home');
+                }, primary: true}
+            ]);
+        }
+
+        function exportHistory() {
+            if (playedHistory.length === 0) {
+                showModal("Empty History", "Play some questions first!");
+                return;
+            }
+            
+            try {
+                // Use Blob method for better compatibility
+                const json = JSON.stringify(playedHistory);
+                const blob = new Blob([json], {type: "application/json"});
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                // Updated filename format
+                a.download = `ConfidentlyWrong_History_${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url); // Clean up
+            } catch(e) {
+                console.error(e);
+                showModal("Export Failed", "Could not generate download file.");
+            }
+        }
+
+        function importHistory(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const loaded = JSON.parse(e.target.result);
+                    if (Array.isArray(loaded)) {
+                        const before = playedHistory.length;
+                        playedHistory = [...new Set([...playedHistory, ...loaded])];
+                        const added = playedHistory.length - before;
+                        saveLocalStorage();
+                        showModal("Import Success", `Added ${added} new questions to history.`);
+                    } else {
+                        showModal("Error", "Invalid file format.");
+                    }
+                } catch(err) {
+                    showModal("Error", "Could not read file.");
+                }
+            };
+            reader.readAsText(file);
+            input.value = ''; // Reset
+        }
+        
+        function forceRefreshData() {
+            window.location.reload(true);
+        }
+
+        // --- CUSTOM MODAL SYSTEM ---
+        function showModal(title, body, actions = []) {
+            els.modalTitle.innerText = title;
+            els.modalBody.innerText = body;
+            els.modalActions.innerHTML = '';
+            
+            // If no actions, default 'OK'
+            if (actions.length === 0) {
+                actions = [{text: "OK", action: null, primary: true}];
+            }
+
+            actions.forEach(btn => {
+                const b = document.createElement('button');
+                b.innerText = btn.text;
+                // Styles
+                if (btn.primary) {
+                    b.className = "flex-1 bg-white text-black py-3 rounded-lg font-bold text-sm btn-press";
+                } else {
+                    b.className = "flex-1 bg-gray-700 text-white py-3 rounded-lg font-bold text-sm btn-press";
+                }
+                
+                b.onclick = () => {
+                    hideModal();
+                    if (btn.action) btn.action();
+                };
+                els.modalActions.appendChild(b);
+            });
+
+            els.modal.classList.remove('hidden');
+            setTimeout(() => els.modal.classList.add('fade-active'), 10);
+        }
+
+        function hideModal() {
+            els.modal.classList.remove('fade-active');
+            setTimeout(() => els.modal.classList.add('hidden'), 200);
+        }
+
+    </script>
+</body>
+</html>
